@@ -74,7 +74,7 @@ package datastructure type AVLInterface interface { } type AVL struct { BST } fu
       <pubDate>Sun, 12 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>https://example.com/p/virtualaddress/</guid>
-      <description>虚拟地址翻译  image-20210911095952199 
+      <description>虚拟地址翻译  image 
  image-20210911091039316 
 这是一张虚拟地址转换成物理地址的流程图，cpu解析一个虚拟地址 解析出VPN和VPO
  VPO从图中可以看出对应的是PPO 也就是图中的后12位就是对应的物理真实地址的12位

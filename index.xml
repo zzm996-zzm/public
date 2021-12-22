@@ -487,22 +487,22 @@
         <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/os/233154-15779791144569.jpg" alt="Featured image of post 虚拟地址翻译" /&gt;&lt;h2 id=&#34;虚拟地址翻译&#34;&gt;虚拟地址翻译&lt;/h2&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://example.com/1.png&#34; &gt;
-		&lt;img src=&#34;https://example.com/1.png&#34;
+	&lt;a href=&#34;https://zzm-1300642547.file.myqcloud.com/blog/images/os/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%801.png&#34; &gt;
+		&lt;img src=&#34;https://zzm-1300642547.file.myqcloud.com/blog/images/os/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%801.png&#34;
 			
 			
 			
 			loading=&#34;lazy&#34;
-			alt=&#34;image-20210911095952199&#34;&gt;
+			alt=&#34;image&#34;&gt;
 	&lt;/a&gt;
 	
-	&lt;figcaption&gt;image-20210911095952199&lt;/figcaption&gt;
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://example.com/2.png&#34; &gt;
-		&lt;img src=&#34;https://example.com/2.png&#34;
+	&lt;a href=&#34;https://zzm-1300642547.file.myqcloud.com/blog/images/os/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%802.png&#34; &gt;
+		&lt;img src=&#34;https://zzm-1300642547.file.myqcloud.com/blog/images/os/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%802.png&#34;
 			
 			
 			
@@ -527,8 +527,8 @@
 &lt;p&gt;如图：&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://example.com/3.png&#34; &gt;
-		&lt;img src=&#34;https://example.com/3.png&#34;
+	&lt;a href=&#34;https://zzm-1300642547.file.myqcloud.com/blog/images/os/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%803.png&#34; &gt;
+		&lt;img src=&#34;https://zzm-1300642547.file.myqcloud.com/blog/images/os/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%803.png&#34;
 			
 			
 			
