@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='golang实现AVL树'><title>AVL</title>
+
+<link rel='canonical' href='https://example.com/p/avl/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='AVL'>
+<meta property='og:description' content='golang实现AVL树'>
+<meta property='og:url' content='https://example.com/p/avl/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='数据结构' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-10-25T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-10-25T00:00:00&#43;00:00'/><meta property='og:image' content='https://example.com/p/avl/192357-15219770375c8e.png' />
+<meta name="twitter:title" content="AVL">
+<meta name="twitter:description" content="golang实现AVL树"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://example.com/p/avl/192357-15219770375c8e.png' />
+    <link rel="shortcut icon" href="image/favicon.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/avl/">
+                <img src="/p/avl/192357-15219770375c8e_huc4c529fcc8eb07c42d76509b2dfc43b6_513799_800x0_resize_box_3.png"
+                        srcset="/p/avl/192357-15219770375c8e_huc4c529fcc8eb07c42d76509b2dfc43b6_513799_800x0_resize_box_3.png 800w, /p/avl/192357-15219770375c8e_huc4c529fcc8eb07c42d76509b2dfc43b6_513799_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="450" 
+                        loading="lazy"
+                        alt="Featured image of post AVL" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="background-color: ; color: #fff;">
+                数据结构
+            </a>
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/avl/">AVL</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        golang实现AVL树
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 25, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h1 id="avl树的核心概念">AVL树的核心概念</h1>
+<p>回到二叉搜索树(BST)他的优点显而易见是查询和插入都相对来说非常的高效，在<strong>较为好</strong>的情况下可以做到都是logn的操作，n对应为树的size。当然这说的是最好的情况下，如果说最坏的情况，会退化成一个链表，所以延伸出了AVL树，之后还有一个红黑树。</p>
+<h3 id="avl的基本概念">AVL的基本概念</h3>
+<p>AVL的基本概念是一个根节点（每一个子节点也可以看做是一个根节点），的左子树和右子树的高度相差不超过2。看看下面这个图</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 324; 
+			flex-basis: 778px"
+	>
+	<a href="/p/avl/1.png" data-size="1229x379">
+		<img src="/p/avl/1.png"
+			width="1229"
+			height="379"
+			srcset="/p/avl/1_huc5e36447260d774b0dc3a43e196ada27_43174_480x0_resize_box_3.png 480w, /p/avl/1_huc5e36447260d774b0dc3a43e196ada27_43174_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>例如左图根节点4，它的左节点3的高度为0，右节点没有索引位-1，高度差的概念是</p>
+<p>** 左子节点高度 - 右子节点的高度 = 0 - (-1） = 1**</p>
+<p>根节点2，它的左节点1的高度为0，右节点4的高度为1  所以 0 - 1 = - 1</p>
+<p>既然知道了AVL的定义，那么查看右图显而易见。对于根节点7的左子树高度是3（2，4，5 | 2，4，3），右子树高度为1（8）</p>
+<p>3 - 1 = 2 不符合AVL的定义</p>
+<h3 id="avl的接口">AVL的接口</h3>
+<p>AVL树查询可以完美继承BST，所以需要扩展的接口是插入和删除两个接口</p>
+<h4 id="插入接口">插入接口</h4>
+<p>首先参考这个图，在插入节点3之前是平衡的AVL，但是插入节点3之后，就失去平衡了，失去平衡的节点就是节点6。</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 142; 
+			flex-basis: 340px"
+	>
+	<a href="/p/avl/2.png" data-size="1372x966">
+		<img src="/p/avl/2.png"
+			width="1372"
+			height="966"
+			srcset="/p/avl/2_hue2264cd0c1caa497ec8faa802276ac5c_94772_480x0_resize_box_3.png 480w, /p/avl/2_hue2264cd0c1caa497ec8faa802276ac5c_94772_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>此时此刻就需要旋转，变成如下这样</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 142; 
+			flex-basis: 342px"
+	>
+	<a href="/p/avl/3.png" data-size="1366x958">
+		<img src="/p/avl/3.png"
+			width="1366"
+			height="958"
+			srcset="/p/avl/3_hu136e92c157edc6c2d27ef0c68afb11b7_92320_480x0_resize_box_3.png 480w, /p/avl/3_hu136e92c157edc6c2d27ef0c68afb11b7_92320_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>此时此刻就平衡了。没错AVL就是每次插入判断是否高度失衡。如果失去平衡则选择。如何选择失去平衡的节点？参考失衡的图，4没有失去平衡，但是6的左节点为2，右节点为0，这就是失去平衡了。所以旋转点就是根节点6！</p>
+<h5 id="旋转的4种情况">旋转的4种情况</h5>
+<p>旋转的情况在邓公的书中有很好的描述</p>
+<p>单旋，分左右</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 121; 
+			flex-basis: 292px"
+	>
+	<a href="/p/avl/4.png" data-size="904x742">
+		<img src="/p/avl/4.png"
+			width="904"
+			height="742"
+			srcset="/p/avl/4_hubee39a17213ad94cd2373627327acf40_105526_480x0_resize_box_3.png 480w, /p/avl/4_hubee39a17213ad94cd2373627327acf40_105526_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>双旋</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 192; 
+			flex-basis: 462px"
+	>
+	<a href="/p/avl/5.png" data-size="1326x688">
+		<img src="/p/avl/5.png"
+			width="1326"
+			height="688"
+			srcset="/p/avl/5_hu0eb9ff7dc9d87961347908bc235c7f04_159827_480x0_resize_box_3.png 480w, /p/avl/5_hu0eb9ff7dc9d87961347908bc235c7f04_159827_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<h4 id="删除接口">删除接口</h4>
+<p>删除的情况和插入很像，使用BST的删除接口，删除之后自底向上判断是否失平衡。仔细回想一下，插入一个节点如果失去平衡，在旋转一次之后会恢复平衡，父节点一直沿着根节点的高度不会发生变化，所以只需要旋转一次即可，但是删除操作是删除一个节点，旋转之后高度会-1。缺失高度的情况会沿着链路一直往上蔓延。</p>
+<p>但是解决办法就是 当旋转完之后判断父节点是否依旧失平衡</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">datastructure</span>
+
+<span class="kd">type</span> <span class="nx">AVLInterface</span> <span class="kd">interface</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">AVL</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">BST</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">NewAVL</span><span class="p">(</span><span class="nx">data</span> <span class="nx">Data</span><span class="p">)</span> <span class="o">*</span><span class="nx">AVL</span> <span class="p">{</span>
+	<span class="nx">avl</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">AVL</span><span class="p">{</span><span class="o">*</span><span class="nf">NewBST</span><span class="p">(</span><span class="nx">data</span><span class="p">)}</span>
+	<span class="nx">avl</span><span class="p">.</span><span class="nx">data</span> <span class="p">=</span> <span class="nx">data</span>
+	<span class="k">return</span> <span class="nx">avl</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">AVL</span><span class="p">)</span> <span class="nf">InsertAVL</span><span class="p">(</span><span class="nx">data</span> <span class="nx">Data</span><span class="p">)</span> <span class="o">*</span><span class="nx">BinNode</span> <span class="p">{</span>
+	<span class="nx">x</span> <span class="o">:=</span> <span class="nx">avl</span><span class="p">.</span><span class="nf">Insert</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="c1">//BST insert
+</span><span class="c1"></span>	<span class="c1">//从x的父节点逐层检查是否高度失衡
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.</span><span class="nx">parent</span><span class="p">;</span> <span class="nx">i</span> <span class="o">!=</span> <span class="kc">nil</span><span class="p">;</span> <span class="nx">i</span> <span class="p">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">parent</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nf">AvlBalanced</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//如果失衡了
+</span><span class="c1"></span>			<span class="c1">//旋转平衡
+</span><span class="c1"></span>			<span class="o">*</span><span class="nx">avl</span><span class="p">.</span><span class="nf">FromParentTo</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">=</span> <span class="nf">RotateAt</span><span class="p">(</span><span class="nf">TallerChild</span><span class="p">(</span><span class="nf">TallerChild</span><span class="p">(</span><span class="nx">i</span><span class="p">)))</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="nf">UpdateHeight</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">x</span>
+
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">AVL</span><span class="p">)</span> <span class="nf">RemoveAVL</span><span class="p">(</span><span class="nx">data</span> <span class="nx">Data</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="nx">node</span> <span class="o">:=</span> <span class="nf">searchr</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">avl</span><span class="p">.</span><span class="nx">root</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">node</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">false</span>
+	<span class="p">}</span>
+
+	<span class="nx">hot</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">BinNode</span><span class="p">{}</span>
+	<span class="nf">removeAt</span><span class="p">(</span><span class="nx">node</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">hot</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">hot</span><span class="p">;</span> <span class="nx">i</span> <span class="o">!=</span> <span class="kc">nil</span><span class="p">;</span> <span class="nx">i</span> <span class="p">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">parent</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nf">AvlBalanced</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+			<span class="c1">//旋转平衡
+</span><span class="c1"></span>			<span class="o">*</span><span class="nx">avl</span><span class="p">.</span><span class="nf">FromParentTo</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">=</span> <span class="nf">RotateAt</span><span class="p">(</span><span class="nf">TallerChild</span><span class="p">(</span><span class="nf">TallerChild</span><span class="p">(</span><span class="nx">i</span><span class="p">)))</span>
+		<span class="p">}</span>
+		<span class="nf">UpdateHeight</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">AVL</span><span class="p">)</span> <span class="nf">FromParentTo</span><span class="p">(</span><span class="nx">node</span> <span class="o">*</span><span class="nx">BinNode</span><span class="p">)</span> <span class="o">**</span><span class="nx">BinNode</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nf">IsRoot</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="o">&amp;</span><span class="nx">avl</span><span class="p">.</span><span class="nx">root</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nf">IsLChild</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="o">&amp;</span><span class="nx">node</span><span class="p">.</span><span class="nx">parent</span><span class="p">.</span><span class="nx">left</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="o">&amp;</span><span class="nx">node</span><span class="p">.</span><span class="nx">parent</span><span class="p">.</span><span class="nx">right</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">Balanced</span><span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">BinNode</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nf">Stature</span><span class="p">(</span><span class="nx">avl</span><span class="p">.</span><span class="nx">left</span><span class="p">)</span> <span class="o">==</span> <span class="nf">Stature</span><span class="p">(</span><span class="nx">avl</span><span class="p">.</span><span class="nx">right</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">BalFac</span><span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">BinNode</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nf">Stature</span><span class="p">(</span><span class="nx">avl</span><span class="p">.</span><span class="nx">left</span><span class="p">)</span> <span class="o">-</span> <span class="nf">Stature</span><span class="p">(</span><span class="nx">avl</span><span class="p">.</span><span class="nx">right</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">AvlBalanced</span><span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">BinNode</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nf">BalFac</span><span class="p">(</span><span class="nx">avl</span><span class="p">)</span> <span class="p">&gt;</span> <span class="o">-</span><span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nf">BalFac</span><span class="p">(</span><span class="nx">avl</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">avl</span> <span class="o">*</span><span class="nx">AVL</span><span class="p">)</span> <span class="nf">IsAVL</span><span class="p">(</span><span class="nx">node</span> <span class="o">*</span><span class="nx">BinNode</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">node</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="c1">// fmt.Println(&#34;是一颗完美的AVL!&#34;)
+</span><span class="c1"></span>		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">!</span><span class="nf">AvlBalanced</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="s">&#34;不是平衡树&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">avl</span><span class="p">.</span><span class="nf">IsAVL</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">left</span><span class="p">)</span>
+	<span class="nx">avl</span><span class="p">.</span><span class="nf">IsAVL</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">right</span><span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/datastruct/">
+        
+        
+            <div class="article-image">
+                <img src="/p/datastruct/wallhaven-rdql81.ef4386127fc73ef51f866f469599a741_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 优先队列"
+                        data-key="datastruct" 
+                        data-hash="md5-70OGEn/HPvUfhm9GlZmnQQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">优先队列</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex2/">
+        
+        
+            <div class="article-image">
+                <img src="/p/mutex2/221956-16033763963867.3a1a2abe36b3c2169e30ed037e46ba5f_hu63ece9e6553c521ee2d6b1b4c777e0a9_419243_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Mutex演进（2）"
+                        data-key="mutex2" 
+                        data-hash="md5-OhoqvjazwhaeMO0Dfka6Xw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（2）</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex1/">
+        
+        
+            <div class="article-image">
+                <img src="/p/mutex1/221956-16033763963867.3a1a2abe36b3c2169e30ed037e46ba5f_hu63ece9e6553c521ee2d6b1b4c777e0a9_419243_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Mutex演进（1）"
+                        data-key="mutex1" 
+                        data-hash="md5-OhoqvjazwhaeMO0Dfka6Xw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（1）</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "f50129bf2ef1dc140097",
+        clientSecret: "546abc42291b4994898d2c5daca35cc15cccfd6f",
+        repo: "stickpraxis",
+        owner: "zzm996-zzm",
+        admin: [""],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#avl的基本概念">AVL的基本概念</a></li>
+        <li><a href="#avl的接口">AVL的接口</a>
+          <ol>
+            <li><a href="#插入接口">插入接口</a></li>
+            <li><a href="#删除接口">删除接口</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

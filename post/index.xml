@@ -38,5 +38,108 @@
 func Init(h Interface) { // heapify 	n := h.</description>
     </item>
     
+    <item>
+      <title>AVL</title>
+      <link>https://example.com/p/avl/</link>
+      <pubDate>Mon, 25 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/avl/</guid>
+      <description>AVL树的核心概念 回到二叉搜索树(BST)他的优点显而易见是查询和插入都相对来说非常的高效，在较为好的情况下可以做到都是logn的操作，n对应为树的size。当然这说的是最好的情况下，如果说最坏的情况，会退化成一个链表，所以延伸出了AVL树，之后还有一个红黑树。
+AVL的基本概念 AVL的基本概念是一个根节点（每一个子节点也可以看做是一个根节点），的左子树和右子树的高度相差不超过2。看看下面这个图
+ image 
+例如左图根节点4，它的左节点3的高度为0，右节点没有索引位-1，高度差的概念是
+** 左子节点高度 - 右子节点的高度 = 0 - (-1） = 1**
+根节点2，它的左节点1的高度为0，右节点4的高度为1 所以 0 - 1 = - 1
+既然知道了AVL的定义，那么查看右图显而易见。对于根节点7的左子树高度是3（2，4，5 | 2，4，3），右子树高度为1（8）
+3 - 1 = 2 不符合AVL的定义
+AVL的接口 AVL树查询可以完美继承BST，所以需要扩展的接口是插入和删除两个接口
+插入接口 首先参考这个图，在插入节点3之前是平衡的AVL，但是插入节点3之后，就失去平衡了，失去平衡的节点就是节点6。
+ image 
+此时此刻就需要旋转，变成如下这样
+ image 
+此时此刻就平衡了。没错AVL就是每次插入判断是否高度失衡。如果失去平衡则选择。如何选择失去平衡的节点？参考失衡的图，4没有失去平衡，但是6的左节点为2，右节点为0，这就是失去平衡了。所以旋转点就是根节点6！
+旋转的4种情况 旋转的情况在邓公的书中有很好的描述
+单旋，分左右
+ image 
+双旋
+ image 
+删除接口 删除的情况和插入很像，使用BST的删除接口，删除之后自底向上判断是否失平衡。仔细回想一下，插入一个节点如果失去平衡，在旋转一次之后会恢复平衡，父节点一直沿着根节点的高度不会发生变化，所以只需要旋转一次即可，但是删除操作是删除一个节点，旋转之后高度会-1。缺失高度的情况会沿着链路一直往上蔓延。
+但是解决办法就是 当旋转完之后判断父节点是否依旧失平衡
+package datastructure type AVLInterface interface { } type AVL struct { BST } func NewAVL(data Data) *AVL { avl := &amp;amp;AVL{*NewBST(data)} avl.</description>
+    </item>
+    
+    <item>
+      <title>虚拟地址翻译</title>
+      <link>https://example.com/p/virtualaddress/</link>
+      <pubDate>Sun, 12 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/virtualaddress/</guid>
+      <description>虚拟地址翻译  image-20210911095952199 
+ image-20210911091039316 
+这是一张虚拟地址转换成物理地址的流程图，cpu解析一个虚拟地址 解析出VPN和VPO
+ VPO从图中可以看出对应的是PPO 也就是图中的后12位就是对应的物理真实地址的12位
+VPN和VPO与真实系统中页的大小息息相关，如果页的大小为4KB 那么就是 2^n = 4KB n = 12
+所以VPO = 12 剩下的地址是 VPN
+ VPN对应着TLB表，这张表的作用用于是缓存的PPN，PPN是真实物理地址的高40位（图中可知），所以就是一个缓存表，TLB表的两个很重要的属性
+ TLBI：TLB表的索引 TLBT: TLB表的标记  如图：
+ image-20210911100527106 
+假设TLB是四路组相连，每组有4个条目。一共是16个条目。
+那么可以得到的是 4 = 2^n n=2 。那么VPN的低2位就是TLBI，剩下的就是TLBT
+根据如上参数，假设虚拟地址是 0x0f3
+ 0000 1111 0011
+假设VPN是 00001111
+TLBT = 000011
+TLBI = 11
+ 对应图中的最后一组标记位为 0x3,如果有效位是1 ，则表示命中 获取到的PPN 是 0xD
+接着上图，如果在TLB表中命中，则返回PPN 然后与 VPO（PPO），如果没有命中则去拿着VPN去页表中获取PPN，然后缓存到TLB中，然后把PPN和VPO(PPO) 结合起来就是真实的物理地址。然后通过L1cache，如果L1cache没有命中则一次去L2,L3，主存中获取数据再返回给CPU，这个就是一个虚拟地址翻译成物理地址，并获取数据的流程</description>
+    </item>
+    
+    <item>
+      <title>多级页表</title>
+      <link>https://example.com/p/pagetable/</link>
+      <pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/pagetable/</guid>
+      <description>多级页表如何节约内存 前言 假设虚拟地址空间为32位（4GB内存）每个页表条目是4B（字节），然后每一个页的大小是4KB，那么对应起来就是，如果此时只有一级页表。那么就是 4GB / 4KB = 1M 需要1M个页表，然后由于每个页表条目是4B，那么一个进程的需要常驻使用的页表内存是 1M * 4B = 4MB 内存空间。 每个进程都有一个这样的4MB占用，所以开销也是不小的
+换成多级级页表 ，假设一级页表映射的是4MB，然后二级页表映射4KB 是4GB /4MB = 1K 需要1k个一级页表条目，然后每个条目的内容对应一个二级页表，每个二级页表有 4MB / 4KB = 1K 个页表条目，二级页表里面的内容才是真实的物理地址。这样可以计算出一个公式
+1024 * 4 + 1024 * 1024 * 4 = 4.004MB 虽然看起来还大了一点，不过实际上 只有1级页表才需要常驻内存
+其实可以想想局部性原理
+如何节约内存 二级页表可以不存在 4G的虚拟地址需要的页表是1M个 需要4M的空间，换成二级页表（2个页表）只有就变成了 4GB/4MB = 1K 个一级页表，然后每个二级页表里面存的才是真正的PPN。
+由于程序的一级列表需要常驻内存，如果二级页表只有20%被使用，那么就是
+1024 * 4 + 0.2 * 1024 * 1024 * 4 = 0.8MB常驻内存 比之前的4MB小了很多
+那么为什么不分级的页表就做不到这样节约内存呢？我们从页表的性质来看，保存在主存中的页表承担的职责是将虚拟地址翻译成物理地址；假如虚拟地址在页表中找不到对应的页表项，计算机系统就不能工作了。所以页表一定要覆盖全部虚拟地址空间，不分级的页表就需要有1M个页表项来映射，而二级页表则最少只需要1K个页表项（此时一级页表覆盖到了全部虚拟地址空间，二级页表在需要时创建）。
+二级页表可以不在主存 没有被使用到的二级列表会存在磁盘，在需要的时候会调度到主存中缓存。
+总结 我们把二级页表再推广到多级页表，就会发现页表占用的内存空间更少了，这一切都要归功于对局部性原理的充分应用。</description>
+    </item>
+    
+    <item>
+      <title>Mutex演进（2）</title>
+      <link>https://example.com/p/mutex2/</link>
+      <pubDate>Sun, 13 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/mutex2/</guid>
+      <description>Mutex是如何实现的（2） 之前看了Mutex的第一版实现，比较简单，一个flag用来判断是否获取到了锁，其他的goroutine排队获取锁，如果换做是我，我能想到的就是第一版的实现。或许还会思考接下来的goroutine公平一点，不是排队获取锁。
+接着看第二版实现，给新的goroutine一些机会，总结来说就是新创建的goroutine肯定在这个时刻是cpu在运行的，所以新的goroutine能拿到锁的话就减少了一些切换的时间，可以在一定程度上提升效率。
+给新人机会 type Mutex struct { state int32 sema uint32 } const ( mutexLocked = 1 &amp;lt;&amp;lt; iota // mutex is locked //初始值 1  mutexWoken //初始值 2  mutexWaiterShift = iota //初始值 2  ) 上面定义了一些常量，mutexLocked 表示是否拿到了锁，mutexWoken表示是否是被Unlock唤醒的，mutexWaiterShift 表示还有多少goroutine在等待获取锁，这些状态都是用state这一个int32位的字段去表示的，使用的是位表示，比如最低的1位表示mutexLocked，低位的第二位表示mutexWoken，其他的表示mutexWaiterShift。
+其实想看懂第二版就需要对位操作有一定的认识，下面我会详细的解释代码中位操作的含义。
+ image-20210727142702392 
+Lock func (m *Mutex) Lock() { // Fast path: 幸运case，能够直接获取到锁  if atomic.CompareAndSwapInt32(&amp;amp;m.state, 0, mutexLocked) { return } awoke := false for { old := m.</description>
+    </item>
+    
+    <item>
+      <title>Mutex演进（1）</title>
+      <link>https://example.com/p/mutex1/</link>
+      <pubDate>Sat, 12 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/mutex1/</guid>
+      <description>Mutex是如何实现的（1） 之前有看一本书上面写了mutex是如何实现的，使用大家都会用，无非就是Lock和Unlock，实现的是Locker接口。在此记录一下Mutex从第一版到现在最新版本是如何实现和演变的。（go 1.16）
+什么是Mutex 互斥锁是并发控制的一个手段，为了避免竞争而建立的并发机制，在并发编程中，如果程序中的一部分会被并发的访问或者修改，那么我们就应该考虑使用mutex去保护起来，这部分被保护的区域就是 临界区
+Mutex的使用很简单，就像下面这样
+var mu sync.Mutex count := 0 go func() { mu.Lock() count += 1 //临界区  mu.Unlock() }() 这里我摘抄一下网上的图片
+ image-20210726190116730 
+最初的Mutex 介绍完之后就直接看看第一版的Mutex代码，初版的代码只有一个flag表示锁是否被持有，实现也很简单，只需要搞懂原子操作的代码就能看懂（cas），如果flag=1就表示被持有了，如果是0那么锁就会被goroutine们去竞争，抢到的goroutine就会把mutex的flag设置为1，然后继续执行临界区的代码。
+ // CAS操作，当时还没有抽象出atomic包 func cas(val *int32, old, new int32) bool func semacquire(*int32) //阻塞 func semrelease(*int32) //唤醒 // 互斥锁的结构，包含两个字段 type Mutex struct { key int32 // 锁是否被持有的标识 sema int32 // 信号量专用，用以阻塞/唤醒goroutine } // 保证成功在val上增加delta的值 func xadd(val *int32, delta int32) (new int32) { for { v := *val //保存v的值 if cas(val, v, v+delta) { //cas操作，比较val和之前保存的v是否有变更 如果没有变更则把val设置为新的值 return v + delta } } panic(&amp;quot;unreached&amp;quot;) } // 请求锁 func (m *Mutex) Lock() { if xadd(&amp;amp;m.</description>
+    </item>
+    
   </channel>
 </rss>

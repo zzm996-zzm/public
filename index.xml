@@ -267,6 +267,522 @@
 &lt;p&gt;看到这里我相信已经明白了具体思路了。&lt;/p&gt;
 </description>
         </item>
+        <item>
+        <title>AVL</title>
+        <link>https://example.com/p/avl/</link>
+        <pubDate>Mon, 25 Oct 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://example.com/p/avl/</guid>
+        <description>&lt;img src="https://example.com/p/avl/192357-15219770375c8e.png" alt="Featured image of post AVL" /&gt;&lt;h1 id=&#34;avl树的核心概念&#34;&gt;AVL树的核心概念&lt;/h1&gt;
+&lt;p&gt;回到二叉搜索树(BST)他的优点显而易见是查询和插入都相对来说非常的高效，在&lt;strong&gt;较为好&lt;/strong&gt;的情况下可以做到都是logn的操作，n对应为树的size。当然这说的是最好的情况下，如果说最坏的情况，会退化成一个链表，所以延伸出了AVL树，之后还有一个红黑树。&lt;/p&gt;
+&lt;h3 id=&#34;avl的基本概念&#34;&gt;AVL的基本概念&lt;/h3&gt;
+&lt;p&gt;AVL的基本概念是一个根节点（每一个子节点也可以看做是一个根节点），的左子树和右子树的高度相差不超过2。看看下面这个图&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 324; 
+			flex-basis: 778px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/avl/1.png&#34; data-size=&#34;1229x379&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/avl/1.png&#34;
+			width=&#34;1229&#34;
+			height=&#34;379&#34;
+			srcset=&#34;https://example.com/p/avl/1_huc5e36447260d774b0dc3a43e196ada27_43174_480x0_resize_box_3.png 480w, https://example.com/p/avl/1_huc5e36447260d774b0dc3a43e196ada27_43174_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;例如左图根节点4，它的左节点3的高度为0，右节点没有索引位-1，高度差的概念是&lt;/p&gt;
+&lt;p&gt;** 左子节点高度 - 右子节点的高度 = 0 - (-1） = 1**&lt;/p&gt;
+&lt;p&gt;根节点2，它的左节点1的高度为0，右节点4的高度为1  所以 0 - 1 = - 1&lt;/p&gt;
+&lt;p&gt;既然知道了AVL的定义，那么查看右图显而易见。对于根节点7的左子树高度是3（2，4，5 | 2，4，3），右子树高度为1（8）&lt;/p&gt;
+&lt;p&gt;3 - 1 = 2 不符合AVL的定义&lt;/p&gt;
+&lt;h3 id=&#34;avl的接口&#34;&gt;AVL的接口&lt;/h3&gt;
+&lt;p&gt;AVL树查询可以完美继承BST，所以需要扩展的接口是插入和删除两个接口&lt;/p&gt;
+&lt;h4 id=&#34;插入接口&#34;&gt;插入接口&lt;/h4&gt;
+&lt;p&gt;首先参考这个图，在插入节点3之前是平衡的AVL，但是插入节点3之后，就失去平衡了，失去平衡的节点就是节点6。&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 142; 
+			flex-basis: 340px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/avl/2.png&#34; data-size=&#34;1372x966&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/avl/2.png&#34;
+			width=&#34;1372&#34;
+			height=&#34;966&#34;
+			srcset=&#34;https://example.com/p/avl/2_hue2264cd0c1caa497ec8faa802276ac5c_94772_480x0_resize_box_3.png 480w, https://example.com/p/avl/2_hue2264cd0c1caa497ec8faa802276ac5c_94772_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;此时此刻就需要旋转，变成如下这样&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 142; 
+			flex-basis: 342px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/avl/3.png&#34; data-size=&#34;1366x958&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/avl/3.png&#34;
+			width=&#34;1366&#34;
+			height=&#34;958&#34;
+			srcset=&#34;https://example.com/p/avl/3_hu136e92c157edc6c2d27ef0c68afb11b7_92320_480x0_resize_box_3.png 480w, https://example.com/p/avl/3_hu136e92c157edc6c2d27ef0c68afb11b7_92320_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;此时此刻就平衡了。没错AVL就是每次插入判断是否高度失衡。如果失去平衡则选择。如何选择失去平衡的节点？参考失衡的图，4没有失去平衡，但是6的左节点为2，右节点为0，这就是失去平衡了。所以旋转点就是根节点6！&lt;/p&gt;
+&lt;h5 id=&#34;旋转的4种情况&#34;&gt;旋转的4种情况&lt;/h5&gt;
+&lt;p&gt;旋转的情况在邓公的书中有很好的描述&lt;/p&gt;
+&lt;p&gt;单旋，分左右&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 121; 
+			flex-basis: 292px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/avl/4.png&#34; data-size=&#34;904x742&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/avl/4.png&#34;
+			width=&#34;904&#34;
+			height=&#34;742&#34;
+			srcset=&#34;https://example.com/p/avl/4_hubee39a17213ad94cd2373627327acf40_105526_480x0_resize_box_3.png 480w, https://example.com/p/avl/4_hubee39a17213ad94cd2373627327acf40_105526_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;双旋&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 192; 
+			flex-basis: 462px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/avl/5.png&#34; data-size=&#34;1326x688&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/avl/5.png&#34;
+			width=&#34;1326&#34;
+			height=&#34;688&#34;
+			srcset=&#34;https://example.com/p/avl/5_hu0eb9ff7dc9d87961347908bc235c7f04_159827_480x0_resize_box_3.png 480w, https://example.com/p/avl/5_hu0eb9ff7dc9d87961347908bc235c7f04_159827_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h4 id=&#34;删除接口&#34;&gt;删除接口&lt;/h4&gt;
+&lt;p&gt;删除的情况和插入很像，使用BST的删除接口，删除之后自底向上判断是否失平衡。仔细回想一下，插入一个节点如果失去平衡，在旋转一次之后会恢复平衡，父节点一直沿着根节点的高度不会发生变化，所以只需要旋转一次即可，但是删除操作是删除一个节点，旋转之后高度会-1。缺失高度的情况会沿着链路一直往上蔓延。&lt;/p&gt;
+&lt;p&gt;但是解决办法就是 当旋转完之后判断父节点是否依旧失平衡&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;datastructure&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;AVLInterface&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;BST&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;NewAVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;NewBST&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)}&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;InsertAVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Insert&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//BST insert
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;	&lt;span class=&#34;c1&#34;&gt;//从x的父节点逐层检查是否高度失衡
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;	&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;parent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;parent&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;AvlBalanced&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//如果失衡了
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;			&lt;span class=&#34;c1&#34;&gt;//旋转平衡
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;			&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;FromParentTo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;RotateAt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;TallerChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;TallerChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt;
+			&lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;
+		&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+		&lt;span class=&#34;nf&#34;&gt;UpdateHeight&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;x&lt;/span&gt;
+
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;RemoveAVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;searchr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+	&lt;span class=&#34;nx&#34;&gt;hot&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+	&lt;span class=&#34;nf&#34;&gt;removeAt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;hot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+	&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;hot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;parent&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;AvlBalanced&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+			&lt;span class=&#34;c1&#34;&gt;//旋转平衡
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;			&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;FromParentTo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;RotateAt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;TallerChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;TallerChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt;
+		&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+		&lt;span class=&#34;nf&#34;&gt;UpdateHeight&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;FromParentTo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;**&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;IsRoot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;root&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;IsLChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;parent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;left&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;parent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;right&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Balanced&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Stature&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;left&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Stature&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;right&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;BalFac&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Stature&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;left&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Stature&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;right&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;AvlBalanced&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;BalFac&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;BalFac&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;AVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;IsAVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;BinNode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;nil&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;c1&#34;&gt;// fmt.Println(&amp;#34;是一颗完美的AVL!&amp;#34;)
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;		&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;AvlBalanced&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;nb&#34;&gt;panic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;不是平衡树&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;IsAVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;left&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;avl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;IsAVL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;right&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>虚拟地址翻译</title>
+        <link>https://example.com/p/virtualaddress/</link>
+        <pubDate>Sun, 12 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://example.com/p/virtualaddress/</guid>
+        <description>&lt;img src="https://example.com/p/virtualaddress/234958-160502339805f5.png" alt="Featured image of post 虚拟地址翻译" /&gt;&lt;h2 id=&#34;虚拟地址翻译&#34;&gt;虚拟地址翻译&lt;/h2&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 126; 
+			flex-basis: 303px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/virtualaddress/1.png&#34; data-size=&#34;642x508&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/virtualaddress/1.png&#34;
+			width=&#34;642&#34;
+			height=&#34;508&#34;
+			srcset=&#34;https://example.com/p/virtualaddress/1_hu7bd504a6a4ba3e16c584296e3e62060e_352369_480x0_resize_box_3.png 480w, https://example.com/p/virtualaddress/1_hu7bd504a6a4ba3e16c584296e3e62060e_352369_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20210911095952199&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20210911095952199&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 128; 
+			flex-basis: 309px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/virtualaddress/2.png&#34; data-size=&#34;683x530&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/virtualaddress/2.png&#34;
+			width=&#34;683&#34;
+			height=&#34;530&#34;
+			srcset=&#34;https://example.com/p/virtualaddress/2_hu56c260855163ca4eef89f4d57efb742a_374833_480x0_resize_box_3.png 480w, https://example.com/p/virtualaddress/2_hu56c260855163ca4eef89f4d57efb742a_374833_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20210911091039316&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20210911091039316&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;这是一张虚拟地址转换成物理地址的流程图，cpu解析一个虚拟地址 解析出VPN和VPO&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;VPO从图中可以看出对应的是PPO 也就是图中的后12位就是对应的物理真实地址的12位&lt;/p&gt;
+&lt;p&gt;VPN和VPO与真实系统中页的大小息息相关，如果页的大小为4KB 那么就是 2^n = 4KB  n = 12&lt;/p&gt;
+&lt;p&gt;所以VPO = 12 剩下的地址是 VPN&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;VPN对应着TLB表，这张表的作用用于是缓存的PPN，PPN是真实物理地址的高40位（图中可知），所以就是一个缓存表，TLB表的两个很重要的属性&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TLBI：TLB表的索引&lt;/li&gt;
+&lt;li&gt;TLBT:  TLB表的标记&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如图：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 395; 
+			flex-basis: 949px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/virtualaddress/3.png&#34; data-size=&#34;534x135&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/virtualaddress/3.png&#34;
+			width=&#34;534&#34;
+			height=&#34;135&#34;
+			srcset=&#34;https://example.com/p/virtualaddress/3_hu3c716feb477ed27372e69b26e0c7027d_110218_480x0_resize_box_3.png 480w, https://example.com/p/virtualaddress/3_hu3c716feb477ed27372e69b26e0c7027d_110218_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20210911100527106&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20210911100527106&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;假设TLB是四路组相连，每组有4个条目。一共是16个条目。&lt;/p&gt;
+&lt;p&gt;那么可以得到的是 4 = 2^n  n=2 。那么VPN的低2位就是TLBI，剩下的就是TLBT&lt;/p&gt;
+&lt;p&gt;根据如上参数，假设虚拟地址是 0x0f3&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;0000 1111 0011&lt;/p&gt;
+&lt;p&gt;假设VPN是 00001111&lt;/p&gt;
+&lt;p&gt;TLBT = 000011&lt;/p&gt;
+&lt;p&gt;TLBI = 11&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;对应图中的最后一组标记位为 0x3,如果有效位是1 ，则表示命中 获取到的PPN 是 0xD&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;接着上图，如果在TLB表中命中，则返回PPN 然后与 VPO（PPO），如果没有命中则去拿着VPN去页表中获取PPN，然后缓存到TLB中，然后把PPN和VPO(PPO) 结合起来就是真实的物理地址。然后通过L1cache，如果L1cache没有命中则一次去L2,L3，主存中获取数据再返回给CPU，这个就是一个虚拟地址翻译成物理地址，并获取数据的流程&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>多级页表</title>
+        <link>https://example.com/p/pagetable/</link>
+        <pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://example.com/p/pagetable/</guid>
+        <description>&lt;img src="https://example.com/p/pagetable/233154-15779791144569.png" alt="Featured image of post 多级页表" /&gt;&lt;h1 id=&#34;多级页表如何节约内存&#34;&gt;多级页表如何节约内存&lt;/h1&gt;
+&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;假设虚拟地址空间为32位（4GB内存）每个页表条目是4B（字节），然后每一个页的大小是4KB，那么对应起来就是，如果此时只有一级页表。那么就是 &lt;code&gt;4GB / 4KB = 1M&lt;/code&gt;  需要1M个页表，然后由于每个页表条目是4B，那么一个进程的需要常驻使用的页表内存是 &lt;code&gt;1M * 4B = 4MB&lt;/code&gt; 内存空间。 每个进程都有一个这样的4MB占用，所以开销也是不小的&lt;/p&gt;
+&lt;p&gt;换成多级级页表 ，假设一级页表映射的是4MB，然后二级页表映射4KB 是&lt;code&gt;4GB /4MB = 1K&lt;/code&gt; 需要1k个一级页表条目，然后每个条目的内容对应一个二级页表，每个二级页表有 &lt;code&gt;4MB /  4KB = 1K&lt;/code&gt; 个页表条目，二级页表里面的内容才是真实的物理地址。这样可以计算出一个公式&lt;/p&gt;
+&lt;p&gt;1024 * 4 + 1024 * 1024 * 4 =  4.004MB 虽然看起来还大了一点，不过实际上 只有1级页表才需要常驻内存&lt;/p&gt;
+&lt;p&gt;其实可以想想局部性原理&lt;/p&gt;
+&lt;h2 id=&#34;如何节约内存&#34;&gt;如何节约内存&lt;/h2&gt;
+&lt;h4 id=&#34;二级页表可以不存在&#34;&gt;二级页表可以不存在&lt;/h4&gt;
+&lt;p&gt;4G的虚拟地址需要的页表是1M个 需要4M的空间，换成二级页表（2个页表）只有就变成了 4GB/4MB = 1K 个一级页表，然后每个二级页表里面存的才是真正的PPN。&lt;/p&gt;
+&lt;p&gt;由于程序的一级列表需要常驻内存，如果二级页表只有20%被使用，那么就是&lt;/p&gt;
+&lt;p&gt;1024 * 4 + 0.2 * 1024 * 1024 * 4 = 0.8MB常驻内存 比之前的4MB小了很多&lt;/p&gt;
+&lt;p&gt;那么为什么不分级的页表就做不到这样节约内存呢？我们从页表的性质来看，保存在主存中的页表承担的职责是将虚拟地址翻译成物理地址；假如虚拟地址在页表中找不到对应的页表项，计算机系统就不能工作了。所以页表一定要覆盖全部虚拟地址空间，不分级的页表就需要有1M个页表项来映射，而二级页表则最少只需要1K个页表项（此时一级页表覆盖到了全部虚拟地址空间，二级页表在需要时创建）。&lt;/p&gt;
+&lt;h4 id=&#34;二级页表可以不在主存&#34;&gt;二级页表可以不在主存&lt;/h4&gt;
+&lt;p&gt;没有被使用到的二级列表会存在磁盘，在需要的时候会调度到主存中缓存。&lt;/p&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+&lt;p&gt;我们把二级页表再推广到多级页表，就会发现页表占用的内存空间更少了，这一切都要归功于对局部性原理的充分应用。&lt;/p&gt;
+&lt;p&gt;回头想想，这么大幅度地解决内存空间，我们失去了什么呢？计算机的很多问题无外乎就是时间换空间和空间换时间了，而多级页表就是典型的时间换空间的例子了，动态创建二级页表、调入和调出二级页表都是需要花费额外时间的，远没有不分级的页表来的直接；而我们也仅仅是利用局部性原理让这个额外时间开销降得比较低了而已。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Mutex演进（2）</title>
+        <link>https://example.com/p/mutex2/</link>
+        <pubDate>Sun, 13 Jun 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://example.com/p/mutex2/</guid>
+        <description>&lt;img src="https://example.com/p/mutex2/221956-16033763963867.png" alt="Featured image of post Mutex演进（2）" /&gt;&lt;h1 id=&#34;mutex是如何实现的2&#34;&gt;Mutex是如何实现的（2）&lt;/h1&gt;
+&lt;p&gt;之前看了Mutex的第一版实现，比较简单，一个flag用来判断是否获取到了锁，其他的goroutine排队获取锁，如果换做是我，我能想到的就是第一版的实现。或许还会思考接下来的goroutine公平一点，不是排队获取锁。&lt;/p&gt;
+&lt;p&gt;接着看第二版实现，给新的goroutine一些机会，总结来说就是新创建的goroutine肯定在这个时刻是cpu在运行的，所以新的goroutine能拿到锁的话就减少了一些切换的时间，可以在一定程度上提升效率。&lt;/p&gt;
+&lt;h3 id=&#34;给新人机会&#34;&gt;给新人机会&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;   &lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Mutex&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int32&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;sema&lt;/span&gt;  &lt;span class=&#34;kt&#34;&gt;uint32&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+
+    &lt;span class=&#34;kd&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;iota&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// mutex is locked  //初始值 1
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;nx&#34;&gt;mutexWoken&lt;/span&gt; 																	&lt;span class=&#34;c1&#34;&gt;//初始值 2 
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;nx&#34;&gt;mutexWaiterShift&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;iota&lt;/span&gt; 										&lt;span class=&#34;c1&#34;&gt;//初始值 2
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面定义了一些常量，&lt;strong&gt;mutexLocked&lt;/strong&gt; 表示是否拿到了锁，&lt;strong&gt;mutexWoken&lt;/strong&gt;表示是否是被Unlock唤醒的，&lt;strong&gt;mutexWaiterShift&lt;/strong&gt; 表示还有多少goroutine在等待获取锁，这些状态都是用&lt;strong&gt;state&lt;/strong&gt;这一个int32位的字段去表示的，使用的是位表示，比如最低的1位表示mutexLocked，低位的第二位表示mutexWoken，其他的表示mutexWaiterShift。&lt;/p&gt;
+&lt;p&gt;其实想看懂第二版就需要对位操作有一定的认识，下面我会详细的解释代码中位操作的含义。&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://zzm-1300642547.cos.ap-guangzhou.myqcloud.com/blog/images/Mutex%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%202/image-20210727142702392.png&#34; &gt;
+		&lt;img src=&#34;https://zzm-1300642547.cos.ap-guangzhou.myqcloud.com/blog/images/Mutex%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%202/image-20210727142702392.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20210727142702392&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20210727142702392&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h4 id=&#34;lock&#34;&gt;Lock&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;   &lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Mutex&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Lock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// Fast path: 幸运case，能够直接获取到锁
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;atomic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;CompareAndSwapInt32&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+        &lt;span class=&#34;nx&#34;&gt;awoke&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt;
+            &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 新状态加锁，希望这次能抢到锁
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//如果被唤醒之后 old拿到的值 xxxx0 那么 xxxx0 &amp;amp; 00001 == 0
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexWaiterShift&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//等待者数量加一
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;awoke&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;c1&#34;&gt;// goroutine是被唤醒的，
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;// 新状态清除唤醒标志
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;^=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutexWoken&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;atomic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;CompareAndSwapInt32&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//设置新状态
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 锁原状态未加锁
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                    &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;
+                &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+                &lt;span class=&#34;nx&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Semacquire&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sema&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 请求信号量
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;nx&#34;&gt;awoke&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;首先还是有一个幸运case，如果cas操作设置state的时候可以直接成功，那么证明此时锁没有被占用，抢到锁的goroutine直接return去执行临界区的代码。如果没有抢到锁会进入for循环，首先awoke我们不管，直接看for循环里面的代码&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;看完unlock再去看awoke，unlock也比较复杂&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;情况1：拿到当前state的状态（old），直接使用 | 把new（state）的最低位设置位1，表示希望拿到锁。接着进入判断，如果之前拿到的old的最低位就是1，那么直接等待者+1，然后设置新的状态，并继续阻塞。&lt;/p&gt;
+&lt;p&gt;情况2： 如果old的mutexlockd位是0，那么使用cas操作把new设置为新的state并break直接返回，表示当前goroutine拿到了锁，可以继续执行临界区的代码。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;为什么需要cas操作，在这里再解释一下，如果把new设置成state的时候，其他goroutine也在执行这块的逻辑，如果比其他goroutine慢了一步，那么就会造成有多个2个或者多个goroutine break了。就同时执行临界区代码了。所以cas操作是锁的精髓&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;unlock&#34;&gt;Unlock&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;   &lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Mutex&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Unlock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// Fast path: drop lock bit.
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;atomic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;AddInt32&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//去掉锁标志
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//本来就没有加锁
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;nb&#34;&gt;panic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;sync: unlock of unlocked mutex&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    
+        &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexWaiterShift&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;||&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexLocked&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexWoken&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 没有等待者，或者有唤醒的waiter，或者锁原来已加锁
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;                &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+            &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;mutexWaiterShift&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutexWoken&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 新状态，准备唤醒goroutine，并设置唤醒标志
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;atomic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;CompareAndSwapInt32&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+                &lt;span class=&#34;nx&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Semrelease&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sema&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+                &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
+            &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+            &lt;span class=&#34;nx&#34;&gt;old&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;state&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;首先cas操作，把state-1，意思就是锁标志位=0，然后判断之前是否是加锁状态，如果之前没有加锁直接解锁会panic，这点要注意。&lt;/p&gt;
+&lt;p&gt;然后进入for循环，第一个if有2个情况。&lt;/p&gt;
+&lt;p&gt;**情况1：**之前注释中标记了，mutexWaiterShift是==2，意思就是32位的int中，高30位是mutexWaiterShift，把低2位移除之后如果是0，那么意味着没有等待者了可以直接返回，解锁成功。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;情况2：&lt;/strong&gt; **mutexLocked | mutexWoken == 01 | 10 = 11 ** ，使用old去&amp;amp;的话，old &amp;amp; 0011，检查解锁后是否为唤醒和加锁状态。如果结果不为 0，证明还有其他协程将 state 设置为唤醒或加锁状态，释放锁。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;情况2可以这样理解，在unlock的第一句就直接使用cas把state mutexlocked的状态改成0了，所有如果此时有新开的gorouine是可以直接获取到锁的，老的goroutine在阻塞中没有被唤醒。这就是给新人机会&amp;hellip;，如果没有新开的goroutine那么判断mutexWoken是否为1，如果为1则表示有被唤醒的goroutine，直接解锁成功&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果没有走进上面的if，那么会把等待的mutexWaiterShift -1，然后把mutexWoken设置为1，使用cas操作把新状态设置进去，然后唤醒其他goroutine，return掉，表示解锁成功。如果在执行cas的过程中发现state被其他goroutine改掉了，那么continue，重新来一遍。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;其实我之前对mutexWoken还不是很理解，但是之后我想通了，我是这么想的&amp;hellip; 如果unlock把woken设置为1 唤醒其他goroutine之后，此时有新的goroutine进来的，新进来的awoke是false，是没有办法把woken置为0的，然后新的goroutine执行的又比较快，在其他goroutine被阻塞之前就释放了锁，那么条件old&amp;amp;(mutexLocked|mutexWoken) != 0  就会通过&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+&lt;p&gt;其实第二版理解起来也是稍微有点困难，我个人去看比较容易，但是用自己的话总结成博客就是一种锻炼了。下一篇就是第三版了，多给些机会，和第四版 解决饥饿问题.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Mutex演进（1）</title>
+        <link>https://example.com/p/mutex1/</link>
+        <pubDate>Sat, 12 Jun 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://example.com/p/mutex1/</guid>
+        <description>&lt;img src="https://example.com/p/mutex1/221956-16033763963867.png" alt="Featured image of post Mutex演进（1）" /&gt;&lt;h2 id=&#34;mutex是如何实现的1&#34;&gt;Mutex是如何实现的（1）&lt;/h2&gt;
+&lt;p&gt;之前有看一本书上面写了mutex是如何实现的，使用大家都会用，无非就是Lock和Unlock，实现的是Locker接口。在此记录一下Mutex从第一版到现在最新版本是如何实现和演变的。（go 1.16）&lt;/p&gt;
+&lt;h3 id=&#34;什么是mutex&#34;&gt;什么是Mutex&lt;/h3&gt;
+&lt;p&gt;互斥锁是并发控制的一个手段，为了避免竞争而建立的并发机制，在并发编程中，如果程序中的一部分会被并发的访问或者修改，那么我们就应该考虑使用mutex去保护起来，这部分被保护的区域就是 &lt;strong&gt;临界区&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Mutex的使用很简单，就像下面这样&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kd&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mu&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;sync&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Mutex&lt;/span&gt;
+	&lt;span class=&#34;nx&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+	&lt;span class=&#34;k&#34;&gt;go&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;nx&#34;&gt;mu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Lock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+		&lt;span class=&#34;nx&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//临界区
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;mu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Unlock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+	&lt;span class=&#34;p&#34;&gt;}()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里我摘抄一下网上的图片&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 186; 
+			flex-basis: 447px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/mutex1/1.png&#34; data-size=&#34;1084x582&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/mutex1/1.png&#34;
+			width=&#34;1084&#34;
+			height=&#34;582&#34;
+			srcset=&#34;https://example.com/p/mutex1/1_hucf7ff398cf87bbecbee6634eca50e0bf_148702_480x0_resize_box_3.png 480w, https://example.com/p/mutex1/1_hucf7ff398cf87bbecbee6634eca50e0bf_148702_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20210726190116730&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20210726190116730&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;最初的mutex&#34;&gt;最初的Mutex&lt;/h3&gt;
+&lt;p&gt;介绍完之后就直接看看第一版的Mutex代码，初版的代码只有一个flag表示锁是否被持有，实现也很简单，只需要搞懂原子操作的代码就能看懂（cas），&lt;strong&gt;如果flag=1就表示被持有了，如果是0那么锁就会被goroutine们去竞争，抢到的goroutine就会把mutex的flag设置为1，然后继续执行临界区的代码。&lt;/strong&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;   // CAS操作，当时还没有抽象出atomic包
+    func cas(val *int32, old, new int32) bool
+    func semacquire(*int32) //阻塞
+    func semrelease(*int32) //唤醒
+    // 互斥锁的结构，包含两个字段
+    type Mutex struct {
+        key  int32 // 锁是否被持有的标识
+        sema int32 // 信号量专用，用以阻塞/唤醒goroutine
+    }
+    
+    // 保证成功在val上增加delta的值
+    func xadd(val *int32, delta int32) (new int32) {
+        for {
+            v := *val //保存v的值
+            if cas(val, v, v+delta) { //cas操作，比较val和之前保存的v是否有变更 如果没有变更则把val设置为新的值
+                return v + delta  
+            }
+        }
+        panic(&amp;quot;unreached&amp;quot;)
+    }
+    
+    // 请求锁
+    func (m *Mutex) Lock() {
+        if xadd(&amp;amp;m.key, 1) == 1 { //标识加1，如果等于1，成功获取到锁
+            return
+        }
+        semacquire(&amp;amp;m.sema) // 否则阻塞等待
+    }
+    
+    func (m *Mutex) Unlock() {
+        if xadd(&amp;amp;m.key, -1) == 0 { // 将标识减去1，如果等于0，则没有其它等待者
+            return
+        }
+        semrelease(&amp;amp;m.sema) // 唤醒其它阻塞的goroutine
+    }    
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;从第一版的mutex可以看出来，如果有10个goroutine去竞争，那么当其中一个goroutine竞争到的时候会把flag加1，如果加1之后==1那么意味着之前是0，表示没有goroutine抢到了锁，那么直接return去执行临界区的代码。当临界区的代码执行完毕之后会执行Unlock，没有抢到锁的goroutine会被&lt;/p&gt;
+&lt;p&gt;我们看看unlock的逻辑，会调用xadd函数，把flag-1，此时flag应该是9，证明还有其他等待者，所有直接唤醒等待队列中的goroutine，由此可以看出，唤醒的之后是没有抢锁这个操作的，其他goroutine会直接回到lock中被唤醒然后返回，锁会唤醒队列中的第一个成员。&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+&lt;p&gt;其实最后可以看出，第一版中有很多缺点，比如只有第一次会抢锁，其他的goroutine只能排队，如果来了新人也只能排队。此时此刻刚好启动一个goroutine，cpu正在运行它，如果这个时候他能直接抢到锁那会在一定程度上节约时间。下一篇记录第二版mutex是如何实现的&lt;/p&gt;
+</description>
+        </item>
         
     </channel>
 </rss>

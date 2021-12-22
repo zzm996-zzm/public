@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>os on 张志明</title>
+    <link>https://example.com/tags/os/</link>
+    <description>Recent content in os on 张志明</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 12 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/tags/os/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>虚拟地址翻译</title>
+      <link>https://example.com/p/virtualaddress/</link>
+      <pubDate>Sun, 12 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/virtualaddress/</guid>
+      <description>虚拟地址翻译  image-20210911095952199 
+ image-20210911091039316 
+这是一张虚拟地址转换成物理地址的流程图，cpu解析一个虚拟地址 解析出VPN和VPO
+ VPO从图中可以看出对应的是PPO 也就是图中的后12位就是对应的物理真实地址的12位
+VPN和VPO与真实系统中页的大小息息相关，如果页的大小为4KB 那么就是 2^n = 4KB n = 12
+所以VPO = 12 剩下的地址是 VPN
+ VPN对应着TLB表，这张表的作用用于是缓存的PPN，PPN是真实物理地址的高40位（图中可知），所以就是一个缓存表，TLB表的两个很重要的属性
+ TLBI：TLB表的索引 TLBT: TLB表的标记  如图：
+ image-20210911100527106 
+假设TLB是四路组相连，每组有4个条目。一共是16个条目。
+那么可以得到的是 4 = 2^n n=2 。那么VPN的低2位就是TLBI，剩下的就是TLBT
+根据如上参数，假设虚拟地址是 0x0f3
+ 0000 1111 0011
+假设VPN是 00001111
+TLBT = 000011
+TLBI = 11
+ 对应图中的最后一组标记位为 0x3,如果有效位是1 ，则表示命中 获取到的PPN 是 0xD
+接着上图，如果在TLB表中命中，则返回PPN 然后与 VPO（PPO），如果没有命中则去拿着VPN去页表中获取PPN，然后缓存到TLB中，然后把PPN和VPO(PPO) 结合起来就是真实的物理地址。然后通过L1cache，如果L1cache没有命中则一次去L2,L3，主存中获取数据再返回给CPU，这个就是一个虚拟地址翻译成物理地址，并获取数据的流程</description>
+    </item>
+    
+    <item>
+      <title>多级页表</title>
+      <link>https://example.com/p/pagetable/</link>
+      <pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/pagetable/</guid>
+      <description>多级页表如何节约内存 前言 假设虚拟地址空间为32位（4GB内存）每个页表条目是4B（字节），然后每一个页的大小是4KB，那么对应起来就是，如果此时只有一级页表。那么就是 4GB / 4KB = 1M 需要1M个页表，然后由于每个页表条目是4B，那么一个进程的需要常驻使用的页表内存是 1M * 4B = 4MB 内存空间。 每个进程都有一个这样的4MB占用，所以开销也是不小的
+换成多级级页表 ，假设一级页表映射的是4MB，然后二级页表映射4KB 是4GB /4MB = 1K 需要1k个一级页表条目，然后每个条目的内容对应一个二级页表，每个二级页表有 4MB / 4KB = 1K 个页表条目，二级页表里面的内容才是真实的物理地址。这样可以计算出一个公式
+1024 * 4 + 1024 * 1024 * 4 = 4.004MB 虽然看起来还大了一点，不过实际上 只有1级页表才需要常驻内存
+其实可以想想局部性原理
+如何节约内存 二级页表可以不存在 4G的虚拟地址需要的页表是1M个 需要4M的空间，换成二级页表（2个页表）只有就变成了 4GB/4MB = 1K 个一级页表，然后每个二级页表里面存的才是真正的PPN。
+由于程序的一级列表需要常驻内存，如果二级页表只有20%被使用，那么就是
+1024 * 4 + 0.2 * 1024 * 1024 * 4 = 0.8MB常驻内存 比之前的4MB小了很多
+那么为什么不分级的页表就做不到这样节约内存呢？我们从页表的性质来看，保存在主存中的页表承担的职责是将虚拟地址翻译成物理地址；假如虚拟地址在页表中找不到对应的页表项，计算机系统就不能工作了。所以页表一定要覆盖全部虚拟地址空间，不分级的页表就需要有1M个页表项来映射，而二级页表则最少只需要1K个页表项（此时一级页表覆盖到了全部虚拟地址空间，二级页表在需要时创建）。
+二级页表可以不在主存 没有被使用到的二级列表会存在磁盘，在需要的时候会调度到主存中缓存。
+总结 我们把二级页表再推广到多级页表，就会发现页表占用的内存空间更少了，这一切都要归功于对局部性原理的充分应用。</description>
+    </item>
+    
+  </channel>
+</rss>

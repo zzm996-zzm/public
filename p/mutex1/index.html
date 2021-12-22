@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='golang中Mutex是如何演进的'><title>Mutex演进（1）</title>
+
+<link rel='canonical' href='https://example.com/p/mutex1/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Mutex演进（1）'>
+<meta property='og:description' content='golang中Mutex是如何演进的'>
+<meta property='og:url' content='https://example.com/p/mutex1/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-06-12T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-06-12T00:00:00&#43;00:00'/><meta property='og:image' content='https://example.com/p/mutex1/221956-16033763963867.png' />
+<meta name="twitter:title" content="Mutex演进（1）">
+<meta name="twitter:description" content="golang中Mutex是如何演进的"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://example.com/p/mutex1/221956-16033763963867.png' />
+    <link rel="shortcut icon" href="image/favicon.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/mutex1/">
+                <img src="/p/mutex1/221956-16033763963867_hu63ece9e6553c521ee2d6b1b4c777e0a9_419243_800x0_resize_box_3.png"
+                        srcset="/p/mutex1/221956-16033763963867_hu63ece9e6553c521ee2d6b1b4c777e0a9_419243_800x0_resize_box_3.png 800w, /p/mutex1/221956-16033763963867_hu63ece9e6553c521ee2d6b1b4c777e0a9_419243_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="456" 
+                        loading="lazy"
+                        alt="Featured image of post Mutex演进（1）" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/mutex1/">Mutex演进（1）</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        golang中Mutex是如何演进的
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 12, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="mutex是如何实现的1">Mutex是如何实现的（1）</h2>
+<p>之前有看一本书上面写了mutex是如何实现的，使用大家都会用，无非就是Lock和Unlock，实现的是Locker接口。在此记录一下Mutex从第一版到现在最新版本是如何实现和演变的。（go 1.16）</p>
+<h3 id="什么是mutex">什么是Mutex</h3>
+<p>互斥锁是并发控制的一个手段，为了避免竞争而建立的并发机制，在并发编程中，如果程序中的一部分会被并发的访问或者修改，那么我们就应该考虑使用mutex去保护起来，这部分被保护的区域就是 <strong>临界区</strong></p>
+<p>Mutex的使用很简单，就像下面这样</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+	<span class="nx">count</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+		<span class="nx">count</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1">//临界区
+</span><span class="c1"></span>    <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="p">}()</span>
+</code></pre></div><p>这里我摘抄一下网上的图片</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 186; 
+			flex-basis: 447px"
+	>
+	<a href="/p/mutex1/1.png" data-size="1084x582">
+		<img src="/p/mutex1/1.png"
+			width="1084"
+			height="582"
+			srcset="/p/mutex1/1_hucf7ff398cf87bbecbee6634eca50e0bf_148702_480x0_resize_box_3.png 480w, /p/mutex1/1_hucf7ff398cf87bbecbee6634eca50e0bf_148702_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="image-20210726190116730">
+	</a>
+	
+	<figcaption>image-20210726190116730</figcaption>
+	
+</figure></p>
+<h3 id="最初的mutex">最初的Mutex</h3>
+<p>介绍完之后就直接看看第一版的Mutex代码，初版的代码只有一个flag表示锁是否被持有，实现也很简单，只需要搞懂原子操作的代码就能看懂（cas），<strong>如果flag=1就表示被持有了，如果是0那么锁就会被goroutine们去竞争，抢到的goroutine就会把mutex的flag设置为1，然后继续执行临界区的代码。</strong></p>
+<pre tabindex="0"><code>   // CAS操作，当时还没有抽象出atomic包
+    func cas(val *int32, old, new int32) bool
+    func semacquire(*int32) //阻塞
+    func semrelease(*int32) //唤醒
+    // 互斥锁的结构，包含两个字段
+    type Mutex struct {
+        key  int32 // 锁是否被持有的标识
+        sema int32 // 信号量专用，用以阻塞/唤醒goroutine
+    }
+    
+    // 保证成功在val上增加delta的值
+    func xadd(val *int32, delta int32) (new int32) {
+        for {
+            v := *val //保存v的值
+            if cas(val, v, v+delta) { //cas操作，比较val和之前保存的v是否有变更 如果没有变更则把val设置为新的值
+                return v + delta  
+            }
+        }
+        panic(&quot;unreached&quot;)
+    }
+    
+    // 请求锁
+    func (m *Mutex) Lock() {
+        if xadd(&amp;m.key, 1) == 1 { //标识加1，如果等于1，成功获取到锁
+            return
+        }
+        semacquire(&amp;m.sema) // 否则阻塞等待
+    }
+    
+    func (m *Mutex) Unlock() {
+        if xadd(&amp;m.key, -1) == 0 { // 将标识减去1，如果等于0，则没有其它等待者
+            return
+        }
+        semrelease(&amp;m.sema) // 唤醒其它阻塞的goroutine
+    }    
+</code></pre><p>从第一版的mutex可以看出来，如果有10个goroutine去竞争，那么当其中一个goroutine竞争到的时候会把flag加1，如果加1之后==1那么意味着之前是0，表示没有goroutine抢到了锁，那么直接return去执行临界区的代码。当临界区的代码执行完毕之后会执行Unlock，没有抢到锁的goroutine会被</p>
+<p>我们看看unlock的逻辑，会调用xadd函数，把flag-1，此时flag应该是9，证明还有其他等待者，所有直接唤醒等待队列中的goroutine，由此可以看出，唤醒的之后是没有抢锁这个操作的，其他goroutine会直接回到lock中被唤醒然后返回，锁会唤醒队列中的第一个成员。</p>
+<h3 id="总结">总结</h3>
+<p>其实最后可以看出，第一版中有很多缺点，比如只有第一次会抢锁，其他的goroutine只能排队，如果来了新人也只能排队。此时此刻刚好启动一个goroutine，cpu正在运行它，如果这个时候他能直接抢到锁那会在一定程度上节约时间。下一篇记录第二版mutex是如何实现的</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/datastruct/">
+        
+        
+            <div class="article-image">
+                <img src="/p/datastruct/wallhaven-rdql81.ef4386127fc73ef51f866f469599a741_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 优先队列"
+                        data-key="datastruct" 
+                        data-hash="md5-70OGEn/HPvUfhm9GlZmnQQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">优先队列</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/avl/">
+        
+        
+            <div class="article-image">
+                <img src="/p/avl/192357-15219770375c8e.fc9099cbd1ddb8c1cc26f128964a9311_huc4c529fcc8eb07c42d76509b2dfc43b6_513799_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post AVL"
+                        data-key="avl" 
+                        data-hash="md5-/JCZy9HduMHMJvEolkqTEQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AVL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex2/">
+        
+        
+            <div class="article-image">
+                <img src="/p/mutex2/221956-16033763963867.3a1a2abe36b3c2169e30ed037e46ba5f_hu63ece9e6553c521ee2d6b1b4c777e0a9_419243_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Mutex演进（2）"
+                        data-key="mutex2" 
+                        data-hash="md5-OhoqvjazwhaeMO0Dfka6Xw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（2）</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "f50129bf2ef1dc140097",
+        clientSecret: "546abc42291b4994898d2c5daca35cc15cccfd6f",
+        repo: "stickpraxis",
+        owner: "zzm996-zzm",
+        admin: [""],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#mutex是如何实现的1">Mutex是如何实现的（1）</a>
+      <ol>
+        <li><a href="#什么是mutex">什么是Mutex</a></li>
+        <li><a href="#最初的mutex">最初的Mutex</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

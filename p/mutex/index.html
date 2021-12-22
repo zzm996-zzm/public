@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='golang中Mutex是如何演进的'><title>Mutex演进（1）</title>
+
+<link rel='canonical' href='https://example.com/p/mutex/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Mutex演进（1）'>
+<meta property='og:description' content='golang中Mutex是如何演进的'>
+<meta property='og:url' content='https://example.com/p/mutex/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-06-13T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-06-13T00:00:00&#43;00:00'/><meta property='og:image' content='https://example.com/wallhaven-rdql81.jpg' />
+<meta name="twitter:title" content="Mutex演进（1）">
+<meta name="twitter:description" content="golang中Mutex是如何演进的"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://example.com/wallhaven-rdql81.jpg' />
+    <link rel="shortcut icon" href="image/favicon.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/mutex/">
+                <img src="/p/mutex/wallhaven-rdql81_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_800x0_resize_q75_box.jpg"
+                        srcset="/p/mutex/wallhaven-rdql81_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_800x0_resize_q75_box.jpg 800w, /p/mutex/wallhaven-rdql81_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="596" 
+                        loading="lazy"
+                        alt="Featured image of post Mutex演进（2）" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/mutex/">Mutex演进（1）</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        golang中Mutex是如何演进的
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 12, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h1 id="mutex是如何实现的2">Mutex是如何实现的（2）</h1>
+<p>之前看了Mutex的第一版实现，比较简单，一个flag用来判断是否获取到了锁，其他的goroutine排队获取锁，如果换做是我，我能想到的就是第一版的实现。或许还会思考接下来的goroutine公平一点，不是排队获取锁。</p>
+<p>接着看第二版实现，给新的goroutine一些机会，总结来说就是新创建的goroutine肯定在这个时刻是cpu在运行的，所以新的goroutine能拿到锁的话就减少了一些切换的时间，可以在一定程度上提升效率。</p>
+<h3 id="给新人机会">给新人机会</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go">   <span class="kd">type</span> <span class="nx">Mutex</span> <span class="kd">struct</span> <span class="p">{</span>
+        <span class="nx">state</span> <span class="kt">int32</span>
+        <span class="nx">sema</span>  <span class="kt">uint32</span>
+    <span class="p">}</span>
+
+
+    <span class="kd">const</span> <span class="p">(</span>
+        <span class="nx">mutexLocked</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// mutex is locked  //初始值 1
+</span><span class="c1"></span>        <span class="nx">mutexWoken</span> 																	<span class="c1">//初始值 2 
+</span><span class="c1"></span>        <span class="nx">mutexWaiterShift</span> <span class="p">=</span> <span class="kc">iota</span> 										<span class="c1">//初始值 2
+</span><span class="c1"></span>    <span class="p">)</span>
+</code></pre></div><p>上面定义了一些常量，<strong>mutexLocked</strong> 表示是否拿到了锁，<strong>mutexWoken</strong>表示是否是被Unlock唤醒的，<strong>mutexWaiterShift</strong> 表示还有多少goroutine在等待获取锁，这些状态都是用<strong>state</strong>这一个int32位的字段去表示的，使用的是位表示，比如最低的1位表示mutexLocked，低位的第二位表示mutexWoken，其他的表示mutexWaiterShift。</p>
+<p>其实想看懂第二版就需要对位操作有一定的认识，下面我会详细的解释代码中位操作的含义。</p>
+<p><figure 
+	>
+	<a href="https://zzm-1300642547.cos.ap-guangzhou.myqcloud.com/blog/images/Mutex%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%202/image-20210727142702392.png" >
+		<img src="https://zzm-1300642547.cos.ap-guangzhou.myqcloud.com/blog/images/Mutex%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%202/image-20210727142702392.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210727142702392">
+	</a>
+	
+	<figcaption>image-20210727142702392</figcaption>
+	
+</figure></p>
+<h4 id="lock">Lock</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go">   <span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">Lock</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// Fast path: 幸运case，能够直接获取到锁
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">mutexLocked</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="nx">awoke</span> <span class="o">:=</span> <span class="kc">false</span>
+        <span class="k">for</span> <span class="p">{</span>
+            <span class="nx">old</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+            <span class="nx">new</span> <span class="o">:=</span> <span class="nx">old</span> <span class="p">|</span> <span class="nx">mutexLocked</span> <span class="c1">// 新状态加锁，希望这次能抢到锁
+</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">//如果被唤醒之后 old拿到的值 xxxx0 那么 xxxx0 &amp; 00001 == 0
+</span><span class="c1"></span>                <span class="nx">new</span> <span class="p">=</span> <span class="nx">old</span> <span class="o">+</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">mutexWaiterShift</span> <span class="c1">//等待者数量加一
+</span><span class="c1"></span>            <span class="p">}</span>
+            <span class="k">if</span> <span class="nx">awoke</span> <span class="p">{</span>
+                <span class="c1">// goroutine是被唤醒的，
+</span><span class="c1"></span>                <span class="c1">// 新状态清除唤醒标志
+</span><span class="c1"></span>                <span class="nx">new</span> <span class="o">&amp;^=</span> <span class="nx">mutexWoken</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">new</span><span class="p">)</span> <span class="p">{</span><span class="c1">//设置新状态
+</span><span class="c1"></span>                <span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">// 锁原状态未加锁
+</span><span class="c1"></span>                    <span class="k">break</span>
+                <span class="p">}</span>
+                <span class="nx">runtime</span><span class="p">.</span><span class="nf">Semacquire</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">)</span> <span class="c1">// 请求信号量
+</span><span class="c1"></span>                <span class="nx">awoke</span> <span class="p">=</span> <span class="kc">true</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div><p>首先还是有一个幸运case，如果cas操作设置state的时候可以直接成功，那么证明此时锁没有被占用，抢到锁的goroutine直接return去执行临界区的代码。如果没有抢到锁会进入for循环，首先awoke我们不管，直接看for循环里面的代码</p>
+<blockquote>
+<p>看完unlock再去看awoke，unlock也比较复杂</p>
+</blockquote>
+<p>情况1：拿到当前state的状态（old），直接使用 | 把new（state）的最低位设置位1，表示希望拿到锁。接着进入判断，如果之前拿到的old的最低位就是1，那么直接等待者+1，然后设置新的状态，并继续阻塞。</p>
+<p>情况2： 如果old的mutexlockd位是0，那么使用cas操作把new设置为新的state并break直接返回，表示当前goroutine拿到了锁，可以继续执行临界区的代码。</p>
+<blockquote>
+<p>为什么需要cas操作，在这里再解释一下，如果把new设置成state的时候，其他goroutine也在执行这块的逻辑，如果比其他goroutine慢了一步，那么就会造成有多个2个或者多个goroutine break了。就同时执行临界区代码了。所以cas操作是锁的精髓</p>
+</blockquote>
+<h4 id="unlock">Unlock</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go">   <span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">Unlock</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// Fast path: drop lock bit.
+</span><span class="c1"></span>        <span class="nx">new</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="o">-</span><span class="nx">mutexLocked</span><span class="p">)</span> <span class="c1">//去掉锁标志
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="nx">new</span><span class="o">+</span><span class="nx">mutexLocked</span><span class="p">)</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">//本来就没有加锁
+</span><span class="c1"></span>            <span class="nb">panic</span><span class="p">(</span><span class="s">&#34;sync: unlock of unlocked mutex&#34;</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+        <span class="nx">old</span> <span class="o">:=</span> <span class="nx">new</span>
+        <span class="k">for</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">// 没有等待者，或者有唤醒的waiter，或者锁原来已加锁
+</span><span class="c1"></span>                <span class="k">return</span>
+            <span class="p">}</span>
+            <span class="nx">new</span> <span class="p">=</span> <span class="p">(</span><span class="nx">old</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">mutexWaiterShift</span><span class="p">)</span> <span class="p">|</span> <span class="nx">mutexWoken</span> <span class="c1">// 新状态，准备唤醒goroutine，并设置唤醒标志
+</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">new</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">runtime</span><span class="p">.</span><span class="nf">Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+            <span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div><p>首先cas操作，把state-1，意思就是锁标志位=0，然后判断之前是否是加锁状态，如果之前没有加锁直接解锁会panic，这点要注意。</p>
+<p>然后进入for循环，第一个if有2个情况。</p>
+<p>**情况1：**之前注释中标记了，mutexWaiterShift是==2，意思就是32位的int中，高30位是mutexWaiterShift，把低2位移除之后如果是0，那么意味着没有等待者了可以直接返回，解锁成功。</p>
+<p><strong>情况2：</strong> **mutexLocked | mutexWoken == 01 | 10 = 11 ** ，使用old去&amp;的话，old &amp; 0011，检查解锁后是否为唤醒和加锁状态。如果结果不为 0，证明还有其他协程将 state 设置为唤醒或加锁状态，释放锁。</p>
+<blockquote>
+<p>情况2可以这样理解，在unlock的第一句就直接使用cas把state mutexlocked的状态改成0了，所有如果此时有新开的gorouine是可以直接获取到锁的，老的goroutine在阻塞中没有被唤醒。这就是给新人机会&hellip;，如果没有新开的goroutine那么判断mutexWoken是否为1，如果为1则表示有被唤醒的goroutine，直接解锁成功</p>
+</blockquote>
+<p>如果没有走进上面的if，那么会把等待的mutexWaiterShift -1，然后把mutexWoken设置为1，使用cas操作把新状态设置进去，然后唤醒其他goroutine，return掉，表示解锁成功。如果在执行cas的过程中发现state被其他goroutine改掉了，那么continue，重新来一遍。</p>
+<blockquote>
+<p>其实我之前对mutexWoken还不是很理解，但是之后我想通了，我是这么想的&hellip; 如果unlock把woken设置为1 唤醒其他goroutine之后，此时有新的goroutine进来的，新进来的awoke是false，是没有办法把woken置为0的，然后新的goroutine执行的又比较快，在其他goroutine被阻塞之前就释放了锁，那么条件old&amp;(mutexLocked|mutexWoken) != 0  就会通过</p>
+</blockquote>
+<h3 id="总结">总结</h3>
+<p>其实第二版理解起来也是稍微有点困难，我个人去看比较容易，但是用自己的话总结成博客就是一种锻炼了。下一篇就是第三版了，多给些机会，和第四版 解决饥饿问题.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/datastruct/">
+        
+        
+            <div class="article-image">
+                <img src="/p/datastruct/wallhaven-rdql81.ef4386127fc73ef51f866f469599a741_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 优先队列"
+                        data-key="datastruct" 
+                        data-hash="md5-70OGEn/HPvUfhm9GlZmnQQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">优先队列</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/avl/">
+        
+        
+            <div class="article-image">
+                <img src="/p/avl/wallhaven-rdql81.ef4386127fc73ef51f866f469599a741_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post AVL"
+                        data-key="avl" 
+                        data-hash="md5-70OGEn/HPvUfhm9GlZmnQQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AVL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/wallhaven-rdql81.jpg" loading="lazy" data-key="mutex" data-hash="/wallhaven-rdql81.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（1）</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "f50129bf2ef1dc140097",
+        clientSecret: "546abc42291b4994898d2c5daca35cc15cccfd6f",
+        repo: "stickpraxis",
+        owner: "zzm996-zzm",
+        admin: [""],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#给新人机会">给新人机会</a>
+          <ol>
+            <li><a href="#lock">Lock</a></li>
+            <li><a href="#unlock">Unlock</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
