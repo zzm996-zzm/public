@@ -12,7 +12,7 @@
         <pubDate>Mon, 01 Nov 2021 00:00:00 +0000</pubDate>
         
         <guid>https://example.com/p/datastruct/</guid>
-        <description>&lt;img src="https://example.com/p/datastruct/wallhaven-rdql81.jpg" alt="Featured image of post 优先队列" /&gt;&lt;h1 id=&#34;优先队列&#34;&gt;优先队列&lt;/h1&gt;
+        <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg" alt="Featured image of post 优先队列" /&gt;&lt;h1 id=&#34;优先队列&#34;&gt;优先队列&lt;/h1&gt;
 &lt;h2 id=&#34;绪论&#34;&gt;绪论&lt;/h2&gt;
 &lt;p&gt;优先队列也可以称之为堆，分为大根堆和小根堆。堆的用处很多，最常见的也就是所谓的堆排序，可以发现也是利用了树的思想去做的。&lt;/p&gt;
 &lt;p&gt;也许用图表达更合适。&lt;/p&gt;
@@ -273,7 +273,7 @@
         <pubDate>Mon, 25 Oct 2021 00:00:00 +0000</pubDate>
         
         <guid>https://example.com/p/avl/</guid>
-        <description>&lt;img src="https://example.com/p/avl/192357-15219770375c8e.png" alt="Featured image of post AVL" /&gt;&lt;h1 id=&#34;avl树的核心概念&#34;&gt;AVL树的核心概念&lt;/h1&gt;
+        <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/192357-15219770375c8e.png" alt="Featured image of post AVL" /&gt;&lt;h1 id=&#34;avl树的核心概念&#34;&gt;AVL树的核心概念&lt;/h1&gt;
 &lt;p&gt;回到二叉搜索树(BST)他的优点显而易见是查询和插入都相对来说非常的高效，在&lt;strong&gt;较为好&lt;/strong&gt;的情况下可以做到都是logn的操作，n对应为树的size。当然这说的是最好的情况下，如果说最坏的情况，会退化成一个链表，所以延伸出了AVL树，之后还有一个红黑树。&lt;/p&gt;
 &lt;h3 id=&#34;avl的基本概念&#34;&gt;AVL的基本概念&lt;/h3&gt;
 &lt;p&gt;AVL的基本概念是一个根节点（每一个子节点也可以看做是一个根节点），的左子树和右子树的高度相差不超过2。看看下面这个图&lt;/p&gt;
@@ -484,19 +484,14 @@
         <pubDate>Sun, 12 Sep 2021 00:00:00 +0000</pubDate>
         
         <guid>https://example.com/p/virtualaddress/</guid>
-        <description>&lt;img src="https://example.com/p/virtualaddress/234958-160502339805f5.png" alt="Featured image of post 虚拟地址翻译" /&gt;&lt;h2 id=&#34;虚拟地址翻译&#34;&gt;虚拟地址翻译&lt;/h2&gt;
+        <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/os/233154-15779791144569.jpg" alt="Featured image of post 虚拟地址翻译" /&gt;&lt;h2 id=&#34;虚拟地址翻译&#34;&gt;虚拟地址翻译&lt;/h2&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 126; 
-			flex-basis: 303px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/virtualaddress/1.png&#34; data-size=&#34;642x508&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/virtualaddress/1.png&#34;
-			width=&#34;642&#34;
-			height=&#34;508&#34;
-			srcset=&#34;https://example.com/p/virtualaddress/1_hu7bd504a6a4ba3e16c584296e3e62060e_352369_480x0_resize_box_3.png 480w, https://example.com/p/virtualaddress/1_hu7bd504a6a4ba3e16c584296e3e62060e_352369_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/1.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/1.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20210911095952199&#34;&gt;
 	&lt;/a&gt;
@@ -505,17 +500,12 @@
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 128; 
-			flex-basis: 309px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/virtualaddress/2.png&#34; data-size=&#34;683x530&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/virtualaddress/2.png&#34;
-			width=&#34;683&#34;
-			height=&#34;530&#34;
-			srcset=&#34;https://example.com/p/virtualaddress/2_hu56c260855163ca4eef89f4d57efb742a_374833_480x0_resize_box_3.png 480w, https://example.com/p/virtualaddress/2_hu56c260855163ca4eef89f4d57efb742a_374833_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/2.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/2.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20210911091039316&#34;&gt;
 	&lt;/a&gt;
@@ -536,17 +526,12 @@
 &lt;/ul&gt;
 &lt;p&gt;如图：&lt;/p&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 395; 
-			flex-basis: 949px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/virtualaddress/3.png&#34; data-size=&#34;534x135&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/virtualaddress/3.png&#34;
-			width=&#34;534&#34;
-			height=&#34;135&#34;
-			srcset=&#34;https://example.com/p/virtualaddress/3_hu3c716feb477ed27372e69b26e0c7027d_110218_480x0_resize_box_3.png 480w, https://example.com/p/virtualaddress/3_hu3c716feb477ed27372e69b26e0c7027d_110218_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/3.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/3.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20210911100527106&#34;&gt;
 	&lt;/a&gt;
@@ -573,7 +558,7 @@
         <pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate>
         
         <guid>https://example.com/p/pagetable/</guid>
-        <description>&lt;img src="https://example.com/p/pagetable/233154-15779791144569.png" alt="Featured image of post 多级页表" /&gt;&lt;h1 id=&#34;多级页表如何节约内存&#34;&gt;多级页表如何节约内存&lt;/h1&gt;
+        <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/os/234958-160502339805f5.jpg" alt="Featured image of post 多级页表" /&gt;&lt;h1 id=&#34;多级页表如何节约内存&#34;&gt;多级页表如何节约内存&lt;/h1&gt;
 &lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
 &lt;p&gt;假设虚拟地址空间为32位（4GB内存）每个页表条目是4B（字节），然后每一个页的大小是4KB，那么对应起来就是，如果此时只有一级页表。那么就是 &lt;code&gt;4GB / 4KB = 1M&lt;/code&gt;  需要1M个页表，然后由于每个页表条目是4B，那么一个进程的需要常驻使用的页表内存是 &lt;code&gt;1M * 4B = 4MB&lt;/code&gt; 内存空间。 每个进程都有一个这样的4MB占用，所以开销也是不小的&lt;/p&gt;
 &lt;p&gt;换成多级级页表 ，假设一级页表映射的是4MB，然后二级页表映射4KB 是&lt;code&gt;4GB /4MB = 1K&lt;/code&gt; 需要1k个一级页表条目，然后每个条目的内容对应一个二级页表，每个二级页表有 &lt;code&gt;4MB /  4KB = 1K&lt;/code&gt; 个页表条目，二级页表里面的内容才是真实的物理地址。这样可以计算出一个公式&lt;/p&gt;
@@ -598,7 +583,7 @@
         <pubDate>Sun, 13 Jun 2021 00:00:00 +0000</pubDate>
         
         <guid>https://example.com/p/mutex2/</guid>
-        <description>&lt;img src="https://example.com/p/mutex2/221956-16033763963867.png" alt="Featured image of post Mutex演进（2）" /&gt;&lt;h1 id=&#34;mutex是如何实现的2&#34;&gt;Mutex是如何实现的（2）&lt;/h1&gt;
+        <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" alt="Featured image of post Mutex演进（2）" /&gt;&lt;h1 id=&#34;mutex是如何实现的2&#34;&gt;Mutex是如何实现的（2）&lt;/h1&gt;
 &lt;p&gt;之前看了Mutex的第一版实现，比较简单，一个flag用来判断是否获取到了锁，其他的goroutine排队获取锁，如果换做是我，我能想到的就是第一版的实现。或许还会思考接下来的goroutine公平一点，不是排队获取锁。&lt;/p&gt;
 &lt;p&gt;接着看第二版实现，给新的goroutine一些机会，总结来说就是新创建的goroutine肯定在这个时刻是cpu在运行的，所以新的goroutine能拿到锁的话就减少了一些切换的时间，可以在一定程度上提升效率。&lt;/p&gt;
 &lt;h3 id=&#34;给新人机会&#34;&gt;给新人机会&lt;/h3&gt;
@@ -708,7 +693,7 @@
         <pubDate>Sat, 12 Jun 2021 00:00:00 +0000</pubDate>
         
         <guid>https://example.com/p/mutex1/</guid>
-        <description>&lt;img src="https://example.com/p/mutex1/221956-16033763963867.png" alt="Featured image of post Mutex演进（1）" /&gt;&lt;h2 id=&#34;mutex是如何实现的1&#34;&gt;Mutex是如何实现的（1）&lt;/h2&gt;
+        <description>&lt;img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" alt="Featured image of post Mutex演进（1）" /&gt;&lt;h2 id=&#34;mutex是如何实现的1&#34;&gt;Mutex是如何实现的（1）&lt;/h2&gt;
 &lt;p&gt;之前有看一本书上面写了mutex是如何实现的，使用大家都会用，无非就是Lock和Unlock，实现的是Locker接口。在此记录一下Mutex从第一版到现在最新版本是如何实现和演变的。（go 1.16）&lt;/p&gt;
 &lt;h3 id=&#34;什么是mutex&#34;&gt;什么是Mutex&lt;/h3&gt;
 &lt;p&gt;互斥锁是并发控制的一个手段，为了避免竞争而建立的并发机制，在并发编程中，如果程序中的一部分会被并发的访问或者修改，那么我们就应该考虑使用mutex去保护起来，这部分被保护的区域就是 &lt;strong&gt;临界区&lt;/strong&gt;&lt;/p&gt;
