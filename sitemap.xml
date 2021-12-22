@@ -2,10 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://example.com/about/</loc>
+    <loc>https://example.com/page/</loc>
     <lastmod>2021-12-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.com/page/</loc>
+    <loc>https://example.com/%E5%85%B3%E4%BA%8E/</loc>
     <lastmod>2021-12-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://example.com/</loc>
@@ -37,8 +37,6 @@
   </url><url>
     <loc>https://example.com/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://example.com/categories/test/</loc>
   </url><url>
     <loc>https://example.com/search/</loc>
   </url>
