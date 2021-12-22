@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数据结构 on 张志明</title>
+    <link>https://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+    <description>Recent content in 数据结构 on 张志明</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 01 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>优先队列</title>
+      <link>https://example.com/p/datastruct/</link>
+      <pubDate>Mon, 01 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/datastruct/</guid>
+      <description>优先队列 绪论 优先队列也可以称之为堆，分为大根堆和小根堆。堆的用处很多，最常见的也就是所谓的堆排序，可以发现也是利用了树的思想去做的。
+也许用图表达更合适。
+ image 
+ 堆：符合以下两个条件之一的完全二叉树：
+  根节点的值 ≥ 子节点的值，这样的堆被称之为最大堆，或大顶堆；
+  根节点的值 ≤ 子节点的值，这样的堆被称之为最小堆，或小顶堆。
+  image 
+明确的基础的概念之后可以思考一下堆排序。首先将数列构建成一个大根堆，按照性质大根堆的堆顶一定是数组中最大的元素，所以我们可以每次将堆顶的元素换到最后面去，然后重新构建一次大根堆，以此类推就会得到一个排序好的数组。
+初始化堆 首先谈谈如何初始化堆。
+ 情况1: 一个一个插入元素，依次构建堆 情况2: 将一个数组构建堆  我们可以从下标1开始当做根节点，那么数组的长度为N+1（N为原数组长度）设根节点为i，那么 公式可以得出
+ i = 1;
+  left = i*2;
+  right = left+1;
+ 不妨思考一下这两种情况的复杂度，空间复杂度来说可以直接给出结论，是 O(1),基本是在原数组构建完全二叉树。那么实际复杂度呢？
+第一种情况 思考一个这样的情况（最坏的情况，大根堆），每次插入的元素都是当前序列中最大的元素,由于是数组，那么每次插入都是append在末端。那么会造成什么样的情况呢？
+当前节点会沿着树的拓扑一直往上浮，树的度为M，那么树的高度是log M，不妨称之为N，那么意味着当前会在树结构中上浮N次。那么参考这张图
+ image 
+此时树的高度为3，底层每个节点往上浮动的数量都是当节点的深度,所以在高度为3的的堆每次插入节点最坏的情况就是28，N=13，logn=3~4 最大上浮次数是28（不妨先定义为push的操作是O(logn)）
+所以我们可以得出每次插入节点上浮的复杂度O(n*logn)
+第二种情况 思考一下，如果初始化就是一个数组的情况下，我们会怎么构建这个堆？莫非还是一个个遍历插入吗？显然不会这样做，会有更聪明的办法。
+参考第一种情况，既然自底向上上浮不好，那么下沉呢？我们要的结果是降低复杂度，所以思考一下树的结构会发现，树的深度越深，那么节点的数量越多，这些结果都是上浮那么复杂度会很高，但是如果是下沉，那么最深的节点已经在最深处了，就不需要下沉了。
+参考这段代码
+func Init(h Interface) { // heapify 	n := h.</description>
+    </item>
+    
+  </channel>
+</rss>

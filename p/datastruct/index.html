@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='在golang中的优先队列'><title>优先队列</title>
+
+<link rel='canonical' href='https://example.com/p/datastruct/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='优先队列'>
+<meta property='og:description' content='在golang中的优先队列'>
+<meta property='og:url' content='https://example.com/p/datastruct/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='数据结构' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-11-01T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-11-01T00:00:00&#43;00:00'/><meta property='og:image' content='https://example.com/p/datastruct/wallhaven-rdql81.jpg' />
+<meta name="twitter:title" content="优先队列">
+<meta name="twitter:description" content="在golang中的优先队列"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://example.com/p/datastruct/wallhaven-rdql81.jpg' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/datastruct/">
+                <img src="/p/datastruct/wallhaven-rdql81_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_800x0_resize_q75_box.jpg"
+                        srcset="/p/datastruct/wallhaven-rdql81_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_800x0_resize_q75_box.jpg 800w, /p/datastruct/wallhaven-rdql81_hu1ef0598fb2314c0312259eaa04ec41d9_1386156_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="596" 
+                        loading="lazy"
+                        alt="Featured image of post 优先队列" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" >
+                数据结构
+            </a>
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/datastruct/">优先队列</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        在golang中的优先队列
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 01, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h1 id="优先队列">优先队列</h1>
+<h2 id="绪论">绪论</h2>
+<p>优先队列也可以称之为堆，分为大根堆和小根堆。堆的用处很多，最常见的也就是所谓的堆排序，可以发现也是利用了树的思想去做的。</p>
+<p>也许用图表达更合适。</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/c6/c64ad410265e4443e6432b3d9e3a49c3.png" >
+		<img src="https://static001.geekbang.org/infoq/c6/c64ad410265e4443e6432b3d9e3a49c3.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<blockquote>
+<p>堆：符合以下两个条件之一的完全二叉树：</p>
+</blockquote>
+<blockquote>
+<p>根节点的值 ≥ 子节点的值，这样的堆被称之为最大堆，或大顶堆；</p>
+</blockquote>
+<blockquote>
+<p>根节点的值 ≤ 子节点的值，这样的堆被称之为最小堆，或小顶堆。</p>
+</blockquote>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/aa/aa8d9755a01ad145a653ff50d99afd74.png" >
+		<img src="https://static001.geekbang.org/infoq/aa/aa8d9755a01ad145a653ff50d99afd74.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>明确的基础的概念之后可以思考一下堆排序。首先将数列构建成一个大根堆，按照性质大根堆的堆顶一定是数组中最大的元素，所以我们可以每次将堆顶的元素换到最后面去，然后重新构建一次大根堆，以此类推就会得到一个排序好的数组。</p>
+<h2 id="初始化堆">初始化堆</h2>
+<p>首先谈谈如何初始化堆。</p>
+<ol>
+<li>情况1: 一个一个插入元素，依次构建堆</li>
+<li>情况2: 将一个数组构建堆</li>
+</ol>
+<p>我们可以从下标1开始当做根节点，那么数组的长度为N+1（N为原数组长度）设根节点为i，那么 公式可以得出</p>
+<blockquote>
+<p>i = 1;</p>
+</blockquote>
+<blockquote>
+<p>left = i*2;</p>
+</blockquote>
+<blockquote>
+<p>right = left+1;</p>
+</blockquote>
+<p>不妨思考一下这两种情况的复杂度，空间复杂度来说可以直接给出结论，是 O(1),基本是在原数组构建完全二叉树。那么实际复杂度呢？</p>
+<h3 id="第一种情况">第一种情况</h3>
+<p>思考一个这样的情况（最坏的情况，大根堆），每次插入的元素都是当前序列中最大的元素,由于是数组，那么每次插入都是append在末端。那么会造成什么样的情况呢？</p>
+<p>当前节点会沿着树的拓扑一直往上浮，树的度为M，那么树的高度是log M，不妨称之为N，那么意味着当前会在树结构中上浮N次。那么参考这张图</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/5b/5b51f237a0c5cd6883dccaf044618f34.png" >
+		<img src="https://static001.geekbang.org/infoq/5b/5b51f237a0c5cd6883dccaf044618f34.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>此时树的高度为3，底层每个节点往上浮动的数量都是当节点的深度,所以在高度为3的的堆每次插入节点最坏的情况就是28，N=13，logn=3~4 最大上浮次数是28（不妨先定义为push的操作是O(logn)）</p>
+<p>所以我们可以得出每次插入节点上浮的复杂度O(n*logn)</p>
+<h3 id="第二种情况">第二种情况</h3>
+<p>思考一下，如果初始化就是一个数组的情况下，我们会怎么构建这个堆？莫非还是一个个遍历插入吗？显然不会这样做，会有更聪明的办法。</p>
+<p>参考第一种情况，既然自底向上上浮不好，那么下沉呢？我们要的结果是降低复杂度，所以思考一下树的结构会发现，树的深度越深，那么节点的数量越多，这些结果都是上浮那么复杂度会很高，但是如果是下沉，那么最深的节点已经在最深处了，就不需要下沉了。</p>
+<p>参考这段代码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">Init</span><span class="p">(</span><span class="nx">h</span> <span class="nx">Interface</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// heapify
+</span><span class="c1"></span>	<span class="nx">n</span> <span class="o">:=</span> <span class="nx">h</span><span class="p">.</span><span class="nf">Len</span><span class="p">()</span> <span class="c1">//h认为是一个数组
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">n</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+		<span class="nf">down</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="c1">//down 下沉
+</span><span class="c1"></span>	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>看看他的语义，获取数组的长度为n，for循环中每次都下沉，但是i是 n/2-1。所以真正的优化就是在这，参考这张图。</p>
+<p>使用二分的思想。先从从树的中间往下下沉（自底向上的下沉），可以发现，根节点无需下沉。每个节点下沉的大小刚好是他的高度。</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/cb/cb3b96595d0ab708dd77a71efd3db92b.png" >
+		<img src="https://static001.geekbang.org/infoq/cb/cb3b96595d0ab708dd77a71efd3db92b.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>看看结果，构建一个堆的复杂度为O(n),达到了一个还不错的线性复杂度。</p>
+<h2 id="分析代码">分析代码</h2>
+<p>说了那么多理论不贴代码怎么行，不过golang有提供heap的package，这里就贴一下源码就行。然后解释解释。</p>
+<blockquote>
+<p>h理解为一个数组，有3个方法。Less作比较的，swap交换元素 Len获取当前元素大小</p>
+</blockquote>
+<p>两段最重要的代码</p>
+<p>up顾名思义上浮，按照之前的公式，j为当前节点，首先获取他的父亲节点</p>
+<blockquote>
+<p>j-1/2 得到父亲节点的下标</p>
+</blockquote>
+<p>如果当前节点大于parent，那么交换，以此类推直到达到合适的位置或者到了根节点。此时上浮结束。时间复杂度为O(logn),基本就是树的高度了。</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/91/91cdb4fddc19af82fae28cb70c3689e0.png" >
+		<img src="https://static001.geekbang.org/infoq/91/91cdb4fddc19af82fae28cb70c3689e0.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>顾名思义这段代码是下沉的代码。看起来还挺多的，但是仔细思考一下还是很简单的。</p>
+<p>先获取当前节点的左孩子 j1，先判断是否大于数组长度了，即已经到尾巴了，还会判断数据是否溢出（想的周到啊宝）。之后再判断左孩子是否大于右孩子，如果是则直接和parent比较，如果大于那么parent下沉，继续和左右孩子比较，交换，直到合适的位置。</p>
+<p>复杂度为 O(logn)</p>
+<p>思考一下为什么下沉还有返回一个bool？</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/2c/2c577a29f215a53a89f68b619188b9ac.png" >
+		<img src="https://static001.geekbang.org/infoq/2c/2c577a29f215a53a89f68b619188b9ac.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<h3 id="push操作">push操作</h3>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/6f/6f47f5ff56671ccc21e4483579e73de3.png" >
+		<img src="https://static001.geekbang.org/infoq/6f/6f47f5ff56671ccc21e4483579e73de3.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>直接push到数组尾部，然后上浮即可，复杂度同up</p>
+<h3 id="pop操作">pop操作</h3>
+<p>其实删除操作就比较有意思，在我的印象里，无论是什么树，只要这棵树有一定特性，那么删除就一定不会简单（实名diss红黑）。</p>
+<p>可以看看具体代码，还是很简单的，将堆顶的元素删除，从数组末尾换一个新节点上来，然后下沉到对应的位置即可</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/10/10ec92f2a591e12489decb442e9bb7dc.png" >
+		<img src="https://static001.geekbang.org/infoq/10/10ec92f2a591e12489decb442e9bb7dc.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>但是还有一段代码可以瞧瞧，remove和pop不一样，pop是直接弹出堆顶，remove是删除堆中指定某个位置的元素。</p>
+<p>我们瞧瞧具体代码，如果是数组末尾，则直接pop删除掉就行了，如果不是，则将数组末尾的值和需要删除的节点调换位置，然后判断是否需要下沉！，如果不需要下沉则上浮。这就是为什么down的需要返回一个bool的原因。</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/ae/ae43765e18fdeaf17945f57f8189f3ca.png" >
+		<img src="https://static001.geekbang.org/infoq/ae/ae43765e18fdeaf17945f57f8189f3ca.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<h3 id="fix操作">Fix操作</h3>
+<p>fix操作类似update，修改堆中元素的值，然后判断是否需要浮动</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/b0/b0e81006cca216933a07260fee192f4e.png" >
+		<img src="https://static001.geekbang.org/infoq/b0/b0e81006cca216933a07260fee192f4e.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<h2 id="谈谈实际应用">谈谈实际应用</h2>
+<p>除了堆排序我们可以看看在实际应用会这么使用堆这个数据结构</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/6c/6c9849921ec764c8aecdc7c3ab2cae6e.png" >
+		<img src="https://static001.geekbang.org/infoq/6c/6c9849921ec764c8aecdc7c3ab2cae6e.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>直接给出答案，首先初始化堆，然后一次pop，当pop到第k次的时候就是最大第k个。</p>
+<p>再来看看第二题</p>
+<p><figure 
+	>
+	<a href="https://static001.geekbang.org/infoq/a5/a56942f2d4848cf934544e1b117cde9e.png" >
+		<img src="https://static001.geekbang.org/infoq/a5/a56942f2d4848cf934544e1b117cde9e.png"
+			
+			
+			
+			loading="lazy"
+			alt="image">
+	</a>
+	
+	<figcaption>image</figcaption>
+	
+</figure></p>
+<p>这这道题我们思考一下合并3个链表，怎么用到堆呢？平时是不是都是数组？</p>
+<p>其实思路也很简单，把链表的头当做单独的元素构建堆。比如此时构建的堆是</p>
+<p>【1，1，2】</p>
+<p>每次pop元素的时候把当前堆顶指向下一个元素，然后重置堆。</p>
+<p>比如pop 1 这个元素 ，那么把堆顶1变成他的next 4 重置堆就变成了</p>
+<p>【1，2，4】</p>
+<p>看到这里我相信已经明白了具体思路了。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#绪论">绪论</a></li>
+    <li><a href="#初始化堆">初始化堆</a>
+      <ol>
+        <li><a href="#第一种情况">第一种情况</a></li>
+        <li><a href="#第二种情况">第二种情况</a></li>
+      </ol>
+    </li>
+    <li><a href="#分析代码">分析代码</a>
+      <ol>
+        <li><a href="#push操作">push操作</a></li>
+        <li><a href="#pop操作">pop操作</a></li>
+        <li><a href="#fix操作">Fix操作</a></li>
+      </ol>
+    </li>
+    <li><a href="#谈谈实际应用">谈谈实际应用</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

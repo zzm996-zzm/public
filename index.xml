@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>张志明</title>
+        <link>https://example.com/</link>
+        <description>Recent content on 张志明</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 21 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>优先队列</title>
+        <link>https://example.com/p/datastruct/</link>
+        <pubDate>Mon, 01 Nov 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://example.com/p/datastruct/</guid>
+        <description>&lt;img src="https://example.com/p/datastruct/wallhaven-rdql81.jpg" alt="Featured image of post 优先队列" /&gt;&lt;h1 id=&#34;优先队列&#34;&gt;优先队列&lt;/h1&gt;
+&lt;h2 id=&#34;绪论&#34;&gt;绪论&lt;/h2&gt;
+&lt;p&gt;优先队列也可以称之为堆，分为大根堆和小根堆。堆的用处很多，最常见的也就是所谓的堆排序，可以发现也是利用了树的思想去做的。&lt;/p&gt;
+&lt;p&gt;也许用图表达更合适。&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/c6/c64ad410265e4443e6432b3d9e3a49c3.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/c6/c64ad410265e4443e6432b3d9e3a49c3.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;堆：符合以下两个条件之一的完全二叉树：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;根节点的值 ≥ 子节点的值，这样的堆被称之为最大堆，或大顶堆；&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;根节点的值 ≤ 子节点的值，这样的堆被称之为最小堆，或小顶堆。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/aa/aa8d9755a01ad145a653ff50d99afd74.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/aa/aa8d9755a01ad145a653ff50d99afd74.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;明确的基础的概念之后可以思考一下堆排序。首先将数列构建成一个大根堆，按照性质大根堆的堆顶一定是数组中最大的元素，所以我们可以每次将堆顶的元素换到最后面去，然后重新构建一次大根堆，以此类推就会得到一个排序好的数组。&lt;/p&gt;
+&lt;h2 id=&#34;初始化堆&#34;&gt;初始化堆&lt;/h2&gt;
+&lt;p&gt;首先谈谈如何初始化堆。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;情况1: 一个一个插入元素，依次构建堆&lt;/li&gt;
+&lt;li&gt;情况2: 将一个数组构建堆&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我们可以从下标1开始当做根节点，那么数组的长度为N+1（N为原数组长度）设根节点为i，那么 公式可以得出&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;i = 1;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;left = i*2;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;right = left+1;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;不妨思考一下这两种情况的复杂度，空间复杂度来说可以直接给出结论，是 O(1),基本是在原数组构建完全二叉树。那么实际复杂度呢？&lt;/p&gt;
+&lt;h3 id=&#34;第一种情况&#34;&gt;第一种情况&lt;/h3&gt;
+&lt;p&gt;思考一个这样的情况（最坏的情况，大根堆），每次插入的元素都是当前序列中最大的元素,由于是数组，那么每次插入都是append在末端。那么会造成什么样的情况呢？&lt;/p&gt;
+&lt;p&gt;当前节点会沿着树的拓扑一直往上浮，树的度为M，那么树的高度是log M，不妨称之为N，那么意味着当前会在树结构中上浮N次。那么参考这张图&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/5b/5b51f237a0c5cd6883dccaf044618f34.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/5b/5b51f237a0c5cd6883dccaf044618f34.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;此时树的高度为3，底层每个节点往上浮动的数量都是当节点的深度,所以在高度为3的的堆每次插入节点最坏的情况就是28，N=13，logn=3~4 最大上浮次数是28（不妨先定义为push的操作是O(logn)）&lt;/p&gt;
+&lt;p&gt;所以我们可以得出每次插入节点上浮的复杂度O(n*logn)&lt;/p&gt;
+&lt;h3 id=&#34;第二种情况&#34;&gt;第二种情况&lt;/h3&gt;
+&lt;p&gt;思考一下，如果初始化就是一个数组的情况下，我们会怎么构建这个堆？莫非还是一个个遍历插入吗？显然不会这样做，会有更聪明的办法。&lt;/p&gt;
+&lt;p&gt;参考第一种情况，既然自底向上上浮不好，那么下沉呢？我们要的结果是降低复杂度，所以思考一下树的结构会发现，树的深度越深，那么节点的数量越多，这些结果都是上浮那么复杂度会很高，但是如果是下沉，那么最深的节点已经在最深处了，就不需要下沉了。&lt;/p&gt;
+&lt;p&gt;参考这段代码&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Interface&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+	&lt;span class=&#34;c1&#34;&gt;// heapify
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;	&lt;span class=&#34;nx&#34;&gt;n&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//h认为是一个数组
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;	&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;--&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+		&lt;span class=&#34;nf&#34;&gt;down&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//down 下沉
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;看看他的语义，获取数组的长度为n，for循环中每次都下沉，但是i是 n/2-1。所以真正的优化就是在这，参考这张图。&lt;/p&gt;
+&lt;p&gt;使用二分的思想。先从从树的中间往下下沉（自底向上的下沉），可以发现，根节点无需下沉。每个节点下沉的大小刚好是他的高度。&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/cb/cb3b96595d0ab708dd77a71efd3db92b.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/cb/cb3b96595d0ab708dd77a71efd3db92b.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;看看结果，构建一个堆的复杂度为O(n),达到了一个还不错的线性复杂度。&lt;/p&gt;
+&lt;h2 id=&#34;分析代码&#34;&gt;分析代码&lt;/h2&gt;
+&lt;p&gt;说了那么多理论不贴代码怎么行，不过golang有提供heap的package，这里就贴一下源码就行。然后解释解释。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;h理解为一个数组，有3个方法。Less作比较的，swap交换元素 Len获取当前元素大小&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;两段最重要的代码&lt;/p&gt;
+&lt;p&gt;up顾名思义上浮，按照之前的公式，j为当前节点，首先获取他的父亲节点&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;j-1/2 得到父亲节点的下标&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果当前节点大于parent，那么交换，以此类推直到达到合适的位置或者到了根节点。此时上浮结束。时间复杂度为O(logn),基本就是树的高度了。&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/91/91cdb4fddc19af82fae28cb70c3689e0.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/91/91cdb4fddc19af82fae28cb70c3689e0.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;顾名思义这段代码是下沉的代码。看起来还挺多的，但是仔细思考一下还是很简单的。&lt;/p&gt;
+&lt;p&gt;先获取当前节点的左孩子 j1，先判断是否大于数组长度了，即已经到尾巴了，还会判断数据是否溢出（想的周到啊宝）。之后再判断左孩子是否大于右孩子，如果是则直接和parent比较，如果大于那么parent下沉，继续和左右孩子比较，交换，直到合适的位置。&lt;/p&gt;
+&lt;p&gt;复杂度为 O(logn)&lt;/p&gt;
+&lt;p&gt;思考一下为什么下沉还有返回一个bool？&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/2c/2c577a29f215a53a89f68b619188b9ac.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/2c/2c577a29f215a53a89f68b619188b9ac.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;push操作&#34;&gt;push操作&lt;/h3&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/6f/6f47f5ff56671ccc21e4483579e73de3.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/6f/6f47f5ff56671ccc21e4483579e73de3.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;直接push到数组尾部，然后上浮即可，复杂度同up&lt;/p&gt;
+&lt;h3 id=&#34;pop操作&#34;&gt;pop操作&lt;/h3&gt;
+&lt;p&gt;其实删除操作就比较有意思，在我的印象里，无论是什么树，只要这棵树有一定特性，那么删除就一定不会简单（实名diss红黑）。&lt;/p&gt;
+&lt;p&gt;可以看看具体代码，还是很简单的，将堆顶的元素删除，从数组末尾换一个新节点上来，然后下沉到对应的位置即可&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/10/10ec92f2a591e12489decb442e9bb7dc.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/10/10ec92f2a591e12489decb442e9bb7dc.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;但是还有一段代码可以瞧瞧，remove和pop不一样，pop是直接弹出堆顶，remove是删除堆中指定某个位置的元素。&lt;/p&gt;
+&lt;p&gt;我们瞧瞧具体代码，如果是数组末尾，则直接pop删除掉就行了，如果不是，则将数组末尾的值和需要删除的节点调换位置，然后判断是否需要下沉！，如果不需要下沉则上浮。这就是为什么down的需要返回一个bool的原因。&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/ae/ae43765e18fdeaf17945f57f8189f3ca.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/ae/ae43765e18fdeaf17945f57f8189f3ca.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;fix操作&#34;&gt;Fix操作&lt;/h3&gt;
+&lt;p&gt;fix操作类似update，修改堆中元素的值，然后判断是否需要浮动&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/b0/b0e81006cca216933a07260fee192f4e.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/b0/b0e81006cca216933a07260fee192f4e.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h2 id=&#34;谈谈实际应用&#34;&gt;谈谈实际应用&lt;/h2&gt;
+&lt;p&gt;除了堆排序我们可以看看在实际应用会这么使用堆这个数据结构&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/6c/6c9849921ec764c8aecdc7c3ab2cae6e.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/6c/6c9849921ec764c8aecdc7c3ab2cae6e.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;直接给出答案，首先初始化堆，然后一次pop，当pop到第k次的时候就是最大第k个。&lt;/p&gt;
+&lt;p&gt;再来看看第二题&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://static001.geekbang.org/infoq/a5/a56942f2d4848cf934544e1b117cde9e.png&#34; &gt;
+		&lt;img src=&#34;https://static001.geekbang.org/infoq/a5/a56942f2d4848cf934544e1b117cde9e.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;image&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;这这道题我们思考一下合并3个链表，怎么用到堆呢？平时是不是都是数组？&lt;/p&gt;
+&lt;p&gt;其实思路也很简单，把链表的头当做单独的元素构建堆。比如此时构建的堆是&lt;/p&gt;
+&lt;p&gt;【1，1，2】&lt;/p&gt;
+&lt;p&gt;每次pop元素的时候把当前堆顶指向下一个元素，然后重置堆。&lt;/p&gt;
+&lt;p&gt;比如pop 1 这个元素 ，那么把堆顶1变成他的next 4 重置堆就变成了&lt;/p&gt;
+&lt;p&gt;【1，2，4】&lt;/p&gt;
+&lt;p&gt;看到这里我相信已经明白了具体思路了。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
