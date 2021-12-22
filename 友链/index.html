@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='虚拟地址翻译'><title>虚拟地址翻译</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='有趣的其他高质量博主'><title>友链</title>
 
-<link rel='canonical' href='https://example.com/p/virtualaddress/'>
+<link rel='canonical' href='https://example.com/%E5%8F%8B%E9%93%BE/'>
 
-<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='虚拟地址翻译'>
-<meta property='og:description' content='虚拟地址翻译'>
-<meta property='og:url' content='https://example.com/p/virtualaddress/'>
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='友链'>
+<meta property='og:description' content='有趣的其他高质量博主'>
+<meta property='og:url' content='https://example.com/%E5%8F%8B%E9%93%BE/'>
 <meta property='og:site_name' content='张志明'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='os' /><meta property='article:published_time' content='2021-09-12T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-09-12T00:00:00&#43;00:00'/><meta property='og:image' content='https://zzm-1300642547.file.myqcloud.com/blog/images/os/233154-15779791144569.jpg' />
-<meta name="twitter:title" content="虚拟地址翻译">
-<meta name="twitter:description" content="虚拟地址翻译"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://zzm-1300642547.file.myqcloud.com/blog/images/os/233154-15779791144569.jpg' />
+<meta property='og:type' content='article'><meta property='article:section' content='Page' /><meta property='article:published_time' content='2021-12-21T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-12-21T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="友链">
+<meta name="twitter:description" content="有趣的其他高质量博主">
     <link rel="shortcut icon" href="image/favicon.png" />
 
     </head>
@@ -61,35 +60,19 @@
         </div>
     
 <main class="main full-width">
-    <article class="has-image main-article">
+    <article class="main-article">
     <header class="article-header">
-        <div class="article-image">
-            <a href="/p/virtualaddress/">
-                
-                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/os/233154-15779791144569.jpg" loading="lazy" alt="Featured image of post 虚拟地址翻译" />
-                
-            </a>
-        </div>
-    
 
     <div class="article-details">
     
-    <header class="article-category">
-        
-            <a href="/categories/os/" >
-                os
-            </a>
-        
-    </header>
-    
 
     <h2 class="article-title">
-        <a href="/p/virtualaddress/">虚拟地址翻译</a>
+        <a href="/%E5%8F%8B%E9%93%BE/">友链</a>
     </h2>
 
     
     <h3 class="article-subtitle">
-        虚拟地址翻译
+        有趣的其他高质量博主
     </h3>
     
 
@@ -106,7 +89,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Sep 12, 2021</time>
+                <time class="article-time--published">Dec 21, 2021</time>
             </div>
         
 
@@ -131,84 +114,50 @@
 </header>
 
     <section class="article-content">
-    <h2 id="虚拟地址翻译">虚拟地址翻译</h2>
-<p><figure 
-	>
-	<a href="/1.png" >
-		<img src="/1.png"
-			
-			
-			
-			loading="lazy"
-			alt="image-20210911095952199">
-	</a>
-	
-	<figcaption>image-20210911095952199</figcaption>
-	
-</figure></p>
-<p><figure 
-	>
-	<a href="/2.png" >
-		<img src="/2.png"
-			
-			
-			
-			loading="lazy"
-			alt="image-20210911091039316">
-	</a>
-	
-	<figcaption>image-20210911091039316</figcaption>
-	
-</figure></p>
-<p>这是一张虚拟地址转换成物理地址的流程图，cpu解析一个虚拟地址 解析出VPN和VPO</p>
-<blockquote>
-<p>VPO从图中可以看出对应的是PPO 也就是图中的后12位就是对应的物理真实地址的12位</p>
-<p>VPN和VPO与真实系统中页的大小息息相关，如果页的大小为4KB 那么就是 2^n = 4KB  n = 12</p>
-<p>所以VPO = 12 剩下的地址是 VPN</p>
-</blockquote>
-<p>VPN对应着TLB表，这张表的作用用于是缓存的PPN，PPN是真实物理地址的高40位（图中可知），所以就是一个缓存表，TLB表的两个很重要的属性</p>
-<ul>
-<li>TLBI：TLB表的索引</li>
-<li>TLBT:  TLB表的标记</li>
-</ul>
-<p>如图：</p>
-<p><figure 
-	>
-	<a href="/3.png" >
-		<img src="/3.png"
-			
-			
-			
-			loading="lazy"
-			alt="image-20210911100527106">
-	</a>
-	
-	<figcaption>image-20210911100527106</figcaption>
-	
-</figure></p>
-<p>假设TLB是四路组相连，每组有4个条目。一共是16个条目。</p>
-<p>那么可以得到的是 4 = 2^n  n=2 。那么VPN的低2位就是TLBI，剩下的就是TLBT</p>
-<p>根据如上参数，假设虚拟地址是 0x0f3</p>
-<blockquote>
-<p>0000 1111 0011</p>
-<p>假设VPN是 00001111</p>
-<p>TLBT = 000011</p>
-<p>TLBI = 11</p>
-</blockquote>
-<p>对应图中的最后一组标记位为 0x3,如果有效位是1 ，则表示命中 获取到的PPN 是 0xD</p>
-<p><strong>接着上图，如果在TLB表中命中，则返回PPN 然后与 VPO（PPO），如果没有命中则去拿着VPN去页表中获取PPN，然后缓存到TLB中，然后把PPN和VPO(PPO) 结合起来就是真实的物理地址。然后通过L1cache，如果L1cache没有命中则一次去L2,L3，主存中获取数据再返回给CPU，这个就是一个虚拟地址翻译成物理地址，并获取数据的流程</strong></p>
+    <h2 id="个人博客">个人博客</h2>
+<table>
+<thead>
+<tr>
+<th>redirect</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="link" href="http://gongguowei.com"  target="_blank" rel="noopener"
+    >龚国玮</a></td>
+<td>写下、记下、留下</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="个人学习">个人学习</h2>
+<table>
+<thead>
+<tr>
+<th>redirect</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="link" href="https://time.geekbang.org/"  target="_blank" rel="noopener"
+    >极客时间</a></td>
+<td>欢迎你在各个关于基础以及golang的评论区寻找我</td>
+</tr>
+<tr>
+<td><a class="link" href="https://leetcode-cn.com/u/you-ei/"  target="_blank" rel="noopener"
+    >Leetcode</a></td>
+<td>一起刷题！！！</td>
+</tr>
+</tbody>
+</table>
 
 </section>
 
 
     <footer class="article-footer">
     
-    <section class="article-tags">
-        
-            <a href="/tags/os/">os</a>
-        
-    </section>
-
 
     
     <section class="article-copyright">
@@ -220,7 +169,7 @@
 
 
 
-        <span>Licensed under CC BY-NC-SA 4.0</span>
+        <span>CC BY-NC-ND</span>
     </section>
     </footer>
 
@@ -230,31 +179,6 @@
 
     <aside class="related-contents--wrapper">
     
-    
-        <h2 class="section-title">Related contents</h2>
-        <div class="related-contents">
-            <div class="flex article-list--tile">
-                
-                    
-<article class="has-image">
-    <a href="/p/pagetable/">
-        
-        
-            <div class="article-image">
-                
-                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/os/234958-160502339805f5.jpg" loading="lazy" data-key="pagetable" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/os/234958-160502339805f5.jpg"/>
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">多级页表</h2>
-        </div>
-    </a>
-</article>
-                
-            </div>
-        </div>
     
 </aside>
 
@@ -407,7 +331,8 @@
                 <div class="widget--toc">
                     <nav id="TableOfContents">
   <ol>
-    <li><a href="#虚拟地址翻译">虚拟地址翻译</a></li>
+    <li><a href="#个人博客">个人博客</a></li>
+    <li><a href="#个人学习">个人学习</a></li>
   </ol>
 </nav>
                 </div>

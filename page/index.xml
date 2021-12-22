@@ -17,6 +17,15 @@
     </item>
     
     <item>
+      <title>友链</title>
+      <link>https://example.com/%E5%8F%8B%E9%93%BE/</link>
+      <pubDate>Tue, 21 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/%E5%8F%8B%E9%93%BE/</guid>
+      <description>个人博客    redirect description     龚国玮 写下、记下、留下     个人学习    redirect description     极客时间 欢迎你在各个关于基础以及golang的评论区寻找我   Leetcode 一起刷题！！！    </description>
+    </item>
+    
+    <item>
       <title>归档</title>
       <link>https://example.com/archives/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
