@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Rabin-Karp &#43; 二分查找'><title>Rabin-Karp</title>
+
+<link rel='canonical' href='https://example.com/p/rabin-karp/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Rabin-Karp'>
+<meta property='og:description' content='Rabin-Karp &#43; 二分查找'>
+<meta property='og:url' content='https://example.com/p/rabin-karp/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='算法' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-12-23T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-12-23T00:00:00&#43;00:00'/><meta property='og:image' content='https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png' />
+<meta name="twitter:title" content="Rabin-Karp">
+<meta name="twitter:description" content="Rabin-Karp &#43; 二分查找"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png' />
+    <link rel="shortcut icon" href="image/favicon.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/rabin-karp/">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png" loading="lazy" alt="Featured image of post Rabin-Karp" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%AE%97%E6%B3%95/" >
+                算法
+            </a>
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/rabin-karp/">Rabin-Karp</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        Rabin-Karp &#43; 二分查找
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 23, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    3 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="今天学一下字符串hash">今天学一下字符串Hash</h2>
+<h3 id="题目描述">题目描述</h3>
+<p>这个是前置题，如果不想看可以往后跳</p>
+<p>这是 LeetCode 上的 <strong>「<a class="link" href="https://leetcode-cn.com/problems/repeated-dna-sequences/"  target="_blank" rel="noopener"
+    >187. 重复的DNA序列</a>」</strong>，难度为 <strong>「中等」</strong>。</p>
+<p>Tag : 「滑动窗口」、「哈希表」、「字符串哈希」、「前缀和」</p>
+<blockquote>
+<p>所有 DNA 都由一系列缩写为 <code>'A'</code>，<code>'C'</code>，<code>'G'</code> 和 <code>'T'</code> 的核苷酸组成，例如：<code>&quot;ACGAATTCCG&quot;</code>。在研究 DNA 时，识别 DNA 中的重复序列有时会对研究非常有帮助。</p>
+<p>编写一个函数来找出所有目标子串，目标子串的长度为10 ，且在 DNA 字符串 <code>s</code> 中出现次数超过一次。</p>
+</blockquote>
+<blockquote>
+<p><strong>示例 1：</strong></p>
+<pre tabindex="0"><code>输入：s = &quot;AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT&quot;
+输出：[&quot;AAAAACCCCC&quot;,&quot;CCCCCAAAAA&quot;]
+</code></pre><p><strong>示例 2：</strong></p>
+<pre tabindex="0"><code>输入：s = &quot;AAAAAAAAAAAAA&quot;
+输出：[&quot;AAAAAAAAAA&quot;]
+</code></pre></blockquote>
+<hr>
+<h4 id="滑动窗口">滑动窗口</h4>
+<p>其实最朴素的做法，看完题目我个人的第一反应就是滑动窗口，由于限定了DNA字符串长度10，所以只需要限定窗口为10，每次往右滑就行了。然后将每次滑动的结果保存到map中 ，只要map出现了重复的元素就可以添加到result里面</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findRepeatedDnaSequences</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
+     <span class="nx">m</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+     <span class="nx">L</span> <span class="o">:=</span> <span class="mi">10</span>
+     <span class="nx">res</span> <span class="o">:=</span>  <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+     <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;=</span><span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span><span class="o">-</span><span class="nx">L</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+       <span class="c1">//获取substr
+</span><span class="c1"></span>         <span class="nx">sub</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">L</span><span class="o">+</span><span class="nx">i</span><span class="p">]</span>
+            <span class="nx">m</span><span class="p">[</span><span class="nx">sub</span><span class="p">]</span> <span class="o">++</span>
+       <span class="c1">//如果sub str 有2个了 那么就加入到结果集
+</span><span class="c1"></span>         <span class="k">if</span> <span class="nx">m</span><span class="p">[</span><span class="nx">sub</span><span class="p">]</span><span class="o">==</span><span class="mi">2</span><span class="p">{</span>
+            <span class="nx">res</span> <span class="p">=</span>  <span class="nb">append</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span><span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">L</span><span class="o">+</span><span class="nx">i</span><span class="p">])</span>
+         <span class="p">}</span>
+     <span class="p">}</span>
+	
+  <span class="c1">//返回结果集
+</span><span class="c1"></span>     <span class="k">return</span> <span class="nx">res</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="字符串hash">字符串Hash</h4>
+<p>接着今天的主题，字符串Hash做法，在极客时间专栏中复习了一遍Java JDK hash的做法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="na">length</span> <span class="o">&gt;&gt;</span> <span class="n">1</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">31</span> <span class="o">*</span> <span class="n">h</span> <span class="o">+</span> <span class="n">getChar</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">i</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">h</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><p>从上面的公式可以这样推到下，我看 <a class="link" href="https://time.geekbang.org/column/intro/100100901?tab=catalog"  target="_blank" rel="noopener"
+    >微扰理论</a> 昊哥的文章中有些出一个公式，对于数学不太好的我以前我是会直接跳过的，现在慢下来先从公式是怎么推出来的看看</p>
+<blockquote>
+<p>s[0]*31^(n-1) + s[1]*31^(n-2) + &hellip; + s[n-1]</p>
+</blockquote>
+<p>假设 byte数组长度为3 我们来把for循环展开来看</p>
+<blockquote>
+<p>i = 0 -&gt; h = 31 * 0  + byte[0]</p>
+<p>i = 1 -&gt; h = 31 * (31 * 0 + byte[0]) + val[1]</p>
+<p>i = 2 -&gt; h = 31 * (31 * (31 * 0 + byte[0]) + val[1]) + val[2]</p>
+<p>h = 31 * 31 * 31 * 0 + 31 * 31 * val[0] + 31 * val[1] + val[2]</p>
+<p>h = 31 ^ n-1 * val[0]  + 31 ^ n-2 * val[1]  + val[2]</p>
+</blockquote>
+<p>继续往下看就是说 为什么JDK要选择31</p>
+<ol>
+<li>31 可以被优化成  31 * i =  (i &laquo; 5) - i  这个很简单</li>
+<li>关于31这个质数不大不小，作为乘子溢出不会太严重，并且冲突的概率也很小，这里只是简单描述下 有兴趣的可以自己去测试一下。</li>
+</ol>
+<p>回归正题，对于DNA序列这道题换第二个做法就是字符串Hash，这里我直接学人精我学一下Java定义乘子为31</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">//字符串Hash
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">findRepeatedDnaSequences</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">N</span> <span class="kt">int</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="kd">var</span> <span class="nx">P</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">31</span>
+
+    <span class="kd">var</span> <span class="nx">n</span> <span class="kt">int</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+	
+    <span class="nx">h</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">N</span><span class="p">)</span>
+    <span class="nx">p</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">N</span><span class="p">)</span>
+
+    <span class="nx">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">1</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;=</span><span class="nx">n</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+     	<span class="c1">//采用前缀和思想，每次把上次的hash状态转移过来
+</span><span class="c1"></span>        <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">P</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">P</span>
+    <span class="p">}</span>
+
+    <span class="c1">// fmt.Println(h)
+</span><span class="c1"></span>    <span class="c1">// fmt.Println(p)
+</span><span class="c1"></span>
+
+
+    <span class="nx">m</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+    <span class="nx">res</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">1</span><span class="p">;</span><span class="nx">i</span><span class="o">+</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="nx">n</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+        <span class="nx">j</span> <span class="o">:=</span> <span class="nx">i</span><span class="o">+</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span>
+
+        <span class="nx">hash</span> <span class="o">:=</span> <span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">-</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">p</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">hash</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nx">v</span><span class="p">,</span><span class="nx">ok</span> <span class="o">:=</span><span class="nx">m</span><span class="p">[</span><span class="nx">hash</span><span class="p">];</span><span class="nx">ok</span><span class="p">{</span>
+            <span class="k">if</span> <span class="nx">v</span> <span class="o">==</span> <span class="mi">1</span><span class="p">{</span>
+                <span class="nx">res</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span><span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="nx">j</span><span class="p">])</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">m</span><span class="p">[</span><span class="nx">hash</span><span class="p">]</span><span class="o">++</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">res</span>
+
+<span class="p">}</span>
+</code></pre></div><p>利用前缀和的思想，加上一个质数，解决hash冲突的问题</p>
+<blockquote>
+<p>如果溢出了他会自动取模，这就是为了要加一个乘数因子来解决hash冲突</p>
+</blockquote>
+<blockquote>
+<p>**hash := h[j] - h[i-1] * p[j-i+1] **</p>
+</blockquote>
+<p>使用一个字符串登场的哈希数组h和一个次方数组p。</p>
+<p>由字符串预处理得到这样的哈希数组和次方数组复杂度为O(n), 当需要计算子串s[i&hellip;j]的哈希值，只需要利用前缀和思想，也就是上面这个公式就可以在O(1)的时间得到Hash值</p>
+<h5 id="我举个栗子">我举个栗子🌰</h5>
+<p>&ldquo;AAAAACCCCC&rdquo; 有如下字符串，我将质数因子设置为2，那么我们可以看看 h 和 p分别是什么</p>
+<p>h = [0 65 195 455 975 2015 4097 8261 16589 33245 66557]</p>
+<p>p = [1 2 4 8 16 32 64 128 256 512 1024]</p>
+<p>如果我们要计算  &ldquo;AAA<strong>AACCC</strong>CC&rdquo; 加粗的子串Hash 应该怎么做呢，对于最后一个C对应于h数组中的 16589</p>
+<p>那么对于初始的A对应于 h中的第四项 不过对于前缀和我们要知道的是</p>
+<blockquote>
+<p>前缀和是什么 举个例子，有如下数组</p>
+<p>nums = [1,2,3,4,5]</p>
+<p>那么前缀和数组就为：</p>
+<p>presum = [0,1,3,6,10,15] presum中的每一个值都是nums中的和，比如6 就是 1+2+3 得到的。可以得到这么一个式子。</p>
+<p>S3 = A1+A2+A3 = 1+2+3 = 6</p>
+<p>S1 = A1 = 1</p>
+<p>那么S3 - S1 = （A1+A2+A3）- (A1） = A2+A3 = 2+3 =5</p>
+<p>所以可以得出结论 前缀和数组中的值减去某一项时，是他们之间的和 。</p>
+</blockquote>
+<p>所以我们应该使用的数字是 455 而不是 975， 将数值代入进数组可以得到</p>
+<p>16589 - 455 * 32 = 2029 ,所以 2029就是这个子串 **&ldquo;AACCC&rdquo;**的Hash值了，我们求证一下它的正确性<figure 
+	>
+	<a href="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/rabin-karp%E9%80%86%E6%8E%A8%E8%BF%87%E7%A8%8B.png" >
+		<img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/rabin-karp%E9%80%86%E6%8E%A8%E8%BF%87%E7%A8%8B.png"
+			
+			
+			
+			loading="lazy"
+			alt="avatar">
+	</a>
+	
+	<figcaption>avatar</figcaption>
+	
+</figure></p>
+<p>直接拿控制台算嘛 我就懒得算了</p>
+<h4 id="进入主题">进入主题</h4>
+<p>今天 这是 LeetCode 上的 <strong>「<a class="link" href="https://leetcode-cn.com/problems/longest-duplicate-substring/"  target="_blank" rel="noopener"
+    >1044. 最长重复子串</a>」</strong>，难度为 <strong>「困难」</strong>。</p>
+<p>Tag : 「滑动窗口」、「哈希表」、「字符串哈希」、「前缀和」、「二分查找」</p>
+<blockquote>
+<p>给你一个字符串 s ，考虑其所有 重复子串 ：即，s 的连续子串，在 s 中出现 2 次或更多次。这些出现之间可能存在重叠。</p>
+<p>返回 任意一个 可能具有最长长度的重复子串。如果 s 不含重复子串，那么答案为 &quot;&quot; 。</p>
+<p><strong>示例 1：</strong></p>
+<pre tabindex="0"><code>输入：s = &quot;banana&quot;
+输出：&quot;ana&quot;
+</code></pre><p><strong>示例 2：</strong></p>
+<pre tabindex="0"><code>输入：s = &quot;abcd&quot;
+输出：&quot;&quot;
+</code></pre></blockquote>
+<p>我直接说答案，这个是求最长重复子串，对于最顶上DNA的题目是限定了 DNA序列为10,对于这种有长度限定直接滑动窗口那真的是美滋滋。其实我一开始是想不到二分的，但是写完DNA的题目就知道如何二分了，不过其实用到的技术列出来应该是 【滑动窗口】 ，【二分查找】，【字符串Hash】</p>
+<p>具体思路：</p>
+<p>二分是二分长度，按照滑动窗口思想，对于特定窗口里面的字符做Hash，保存到Map中，如果map存在我们可以判断当前mid长度是有的，使用一个Max保存目前最大长度。此时left+1，如果没有找到证明当前mid长度是不存在子串的，那么此时right-1 往更小的长度去寻找子串就行了。</p>
+<p>如下是golang实现：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">substrHash</span> <span class="kd">func</span><span class="p">(</span><span class="nx">left</span><span class="p">,</span><span class="nx">right</span> <span class="kt">int</span><span class="p">,</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">int</span>
+
+<span class="kd">type</span> <span class="nx">check</span> <span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span><span class="nx">len</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> 
+
+<span class="kd">const</span> <span class="nx">power</span> <span class="p">=</span> <span class="mi">31</span>
+
+<span class="kd">func</span> <span class="nf">longestDupSubstring</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">n</span> <span class="kt">int</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">p</span><span class="p">,</span><span class="nx">h</span> <span class="p">[]</span><span class="kt">int</span>
+    
+    <span class="nx">p</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nx">h</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nx">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">1</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;=</span><span class="nx">n</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+        <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">power</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">power</span>
+    <span class="p">}</span>
+
+    <span class="nx">substrHash</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">left</span><span class="p">,</span><span class="nx">right</span> <span class="kt">int</span><span class="p">,</span><span class="nx">h</span><span class="p">,</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span><span class="p">{</span>
+        <span class="k">return</span> <span class="nx">h</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span><span class="o">-</span><span class="nx">h</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">*</span> <span class="nx">p</span><span class="p">[</span><span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="nx">check</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span><span class="nx">tl</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">n</span> <span class="kt">int</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+        <span class="nx">m</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">+</span><span class="nx">tl</span> <span class="p">&lt;</span> <span class="nx">n</span> <span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+            <span class="nx">right</span> <span class="o">:=</span> <span class="nx">tl</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="nx">hash</span> <span class="o">:=</span> <span class="nf">substrHash</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">right</span><span class="p">,</span><span class="nx">h</span><span class="p">,</span><span class="nx">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nx">_</span><span class="p">,</span><span class="nx">has</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">[</span><span class="nx">hash</span><span class="p">];</span><span class="nx">has</span><span class="p">{</span>
+                <span class="k">return</span> <span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="p">:</span><span class="nx">right</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="nx">m</span><span class="p">[</span><span class="nx">hash</span><span class="p">]</span><span class="o">++</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s">&#34;&#34;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//二分结果
+</span><span class="c1"></span>
+    <span class="nx">l</span><span class="p">,</span><span class="nx">r</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">str</span> <span class="kt">string</span>
+    <span class="kd">var</span> <span class="nx">res</span> <span class="kt">string</span> 
+    <span class="k">for</span> <span class="nx">l</span><span class="p">&lt;</span><span class="nx">r</span> <span class="p">{</span>
+        <span class="nx">mid</span> <span class="o">:=</span> <span class="p">(</span><span class="nx">l</span><span class="o">+</span><span class="nx">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span>
+        <span class="nx">str</span> <span class="p">=</span> <span class="nf">check</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span><span class="nx">mid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nx">str</span> <span class="o">==</span> <span class="s">&#34;&#34;</span><span class="p">{</span>
+            <span class="nx">r</span> <span class="p">=</span> <span class="nx">mid</span> 
+        <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+            <span class="nx">l</span> <span class="p">=</span> <span class="nx">mid</span><span class="o">+</span><span class="mi">1</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span> <span class="p">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">res</span> <span class="p">=</span> <span class="nx">str</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+
+    <span class="k">return</span> <span class="nx">res</span>
+
+
+<span class="p">}</span>
+</code></pre></div><p>这个算法就是 Rabin-Karp + 二分搜索 ，所以之前那个字符串Hash就是 Rabin-Karp算法啦！</p>
+<h2 id="总结">总结</h2>
+<p>其实对于整个流程，从中等题到困难题就是大问题拆分的小问题，滑动窗口的版本是我2个月前顺手就写了，今天这道困难题如果不用一些技巧用滑窗就直接变成暴力O(N^2)了。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/datastruct/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg" loading="lazy" data-key="datastruct" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">优先队列</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/avl/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/avl.png" loading="lazy" data-key="avl" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/avl.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AVL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex2/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" loading="lazy" data-key="mutex2" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（2）</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex1/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" loading="lazy" data-key="mutex1" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（1）</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "f50129bf2ef1dc140097",
+        clientSecret: "546abc42291b4994898d2c5daca35cc15cccfd6f",
+        repo: "stickpraxis",
+        owner: "zzm996-zzm",
+        admin: [""],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#今天学一下字符串hash">今天学一下字符串Hash</a>
+      <ol>
+        <li><a href="#题目描述">题目描述</a>
+          <ol>
+            <li><a href="#滑动窗口">滑动窗口</a></li>
+            <li><a href="#字符串hash">字符串Hash</a></li>
+            <li><a href="#进入主题">进入主题</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+
+        
+        $.goup({
+        trigger: 300,
+        bottomOffset: 20,
+        locationOffset: 20,
+        title:  'Back to TOP',
+        titleAsText: false
+    });
+
+</script>
+
+    </body>
+</html>
