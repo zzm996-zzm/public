@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='吃苹果的最大数量'><title>PriorityQueue And  Greedy</title>
+
+<link rel='canonical' href='https://example.com/p/priorityqueue_greedy/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='PriorityQueue And  Greedy'>
+<meta property='og:description' content='吃苹果的最大数量'>
+<meta property='og:url' content='https://example.com/p/priorityqueue_greedy/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='算法' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-12-23T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-12-23T00:00:00&#43;00:00'/><meta property='og:image' content='https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/2021-12-14-apple.jpeg' />
+<meta name="twitter:title" content="PriorityQueue And  Greedy">
+<meta name="twitter:description" content="吃苹果的最大数量"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/2021-12-14-apple.jpeg' />
+    <link rel="shortcut icon" href="image/favicon.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "dark");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/priorityqueue_greedy/">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/2021-12-14-apple.jpeg" loading="lazy" alt="Featured image of post PriorityQueue And  Greedy" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%AE%97%E6%B3%95/" >
+                算法
+            </a>
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/priorityqueue_greedy/">PriorityQueue And  Greedy</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        吃苹果的最大数量
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 23, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="今天的每日一题还比较有趣">今天的每日一题还比较有趣~</h2>
+<h3 id="题目描述">题目描述</h3>
+<p>这个是2021-12-24的每日一题，平安夜官方还是挺有趣弄了个吃苹果。</p>
+<p>Leetcode <strong>「<a class="link" href="https://leetcode-cn.com/problems/repeated-dna-sequences/"  target="_blank" rel="noopener"
+    >1705. 吃苹果的最大数目</a>」</strong></p>
+<p>Tag : 「贪心」、「优先队列」</p>
+<blockquote>
+<p>有一棵特殊的苹果树，一连 n 天，每天都可以长出若干个苹果。在第 i 天，树上会长出 apples[i] 个苹果，这些苹果将会在 days[i] 天后（也就是说，第 i + days[i] 天时）腐烂，变得无法食用。也可能有那么几天，树上不会长出新的苹果，此时用 apples[i] == 0 且 days[i] == 0 表示。</p>
+<p>你打算每天 最多 吃一个苹果来保证营养均衡。注意，你可以在这 n 天之后继续吃苹果。</p>
+<p>给你两个长度为 n 的整数数组 days 和 apples ，返回你可以吃掉的苹果的最大数目。</p>
+<p><strong>示例 1：</strong></p>
+<pre tabindex="0"><code>输入：apples = [1,2,3,5,2], days = [3,2,1,4,2]
+输出：7
+解释：你可以吃掉 7 个苹果：
+
+- 第一天，你吃掉第一天长出来的苹果。
+- 第二天，你吃掉一个第二天长出来的苹果。
+- 第三天，你吃掉一个第二天长出来的苹果。过了这一天，第三天长出来的苹果就已经腐烂了。
+- 第四天到第七天，你吃的都是第四天长出来的苹果。
+</code></pre><p><strong>示例 2：</strong></p>
+<pre tabindex="0"><code>输入：apples = [3,0,0,0,0,2], days = [3,0,0,0,0,2]
+输出：5
+解释：你可以吃掉 5 个苹果：
+- 第一天到第三天，你吃的都是第一天长出来的苹果。
+- 第四天和第五天不吃苹果。
+- 第六天和第七天，你吃的都是第六天长出来的苹果。
+</code></pre></blockquote>
+<p>其实一开始我也没往这块想，我个人觉得贪心是挺难的，它没有什么章法套路啊，就是一个思想。也没有模板不像堆，堆的概念很清晰，大根堆、小根堆。顺手点开题解看了一眼就说是堆去解。下面就理一下思路</p>
+<p>总体体现的是一句话优先吃掉快过期的。那么代码就很清晰了</p>
+<pre tabindex="0"><code>//第一一个二元组 pari{这组苹果的过期时间，苹果的数量}
+//将苹果加入优先队列 一边加一边吃，具体是按照 苹果的过期时间建立小根堆，优先吃掉快过期的
+//用一个time 记录当前是第几天
+//使用一个循环依次将二元组加入优先队列，其中会判断是否过期，如果过期Pop
+//加入完队列之后 直接使用
+ 				p := heap.Pop(&amp;h).(pair)
+        //最多吃多少天 和一共多少个 ，最多只能吃这么多 不能再多了
+        num := min(p.end-time,p.left)
+        ans += num
+        time+= num
+     
+     快速计算可吃苹果数量
+
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">//用golang的堆是真的挺费劲的 我实话说
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">eatenApples</span><span class="p">(</span><span class="nx">apples</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">days</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">h</span> <span class="nx">hp</span> 
+    <span class="kd">var</span> <span class="nx">ans</span> <span class="kt">int</span> 
+    <span class="kd">var</span> <span class="nx">time</span> <span class="kt">int</span> 
+    <span class="k">for</span> <span class="nx">time</span><span class="p">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">time</span><span class="p">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="nx">apples</span><span class="p">);</span><span class="nx">time</span><span class="o">++</span><span class="p">{</span>
+        <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">h</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">end</span> <span class="o">&lt;=</span> <span class="nx">time</span> <span class="p">{</span>
+            <span class="nx">heap</span><span class="p">.</span><span class="nf">Pop</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">h</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">apples</span><span class="p">[</span><span class="nx">time</span><span class="p">]</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">heap</span><span class="p">.</span><span class="nf">Push</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">h</span><span class="p">,</span> <span class="nx">pair</span><span class="p">{</span><span class="nx">time</span> <span class="o">+</span> <span class="nx">days</span><span class="p">[</span><span class="nx">time</span><span class="p">],</span> <span class="nx">apples</span><span class="p">[</span><span class="nx">time</span><span class="p">]})</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">h</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">left</span> <span class="o">--</span>
+            <span class="k">if</span> <span class="nx">h</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">left</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="nx">heap</span><span class="p">.</span><span class="nf">Pop</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">h</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="nx">ans</span> <span class="o">++</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span>  <span class="o">&amp;&amp;</span> <span class="nx">h</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">end</span> <span class="o">&lt;=</span> <span class="nx">time</span> <span class="p">{</span>
+            <span class="nx">heap</span><span class="p">.</span><span class="nf">Pop</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">h</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span>  <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="k">break</span>
+        <span class="p">}</span>
+       
+        <span class="nx">p</span> <span class="o">:=</span> <span class="nx">heap</span><span class="p">.</span><span class="nf">Pop</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">h</span><span class="p">).(</span><span class="nx">pair</span><span class="p">)</span>
+        <span class="c1">//最多吃多少天 和一共多少个 ，最多只能吃这么多 不能再多了
+</span><span class="c1"></span>        <span class="nx">num</span> <span class="o">:=</span> <span class="nf">min</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">end</span><span class="o">-</span><span class="nx">time</span><span class="p">,</span><span class="nx">p</span><span class="p">.</span><span class="nx">left</span><span class="p">)</span>
+        <span class="nx">ans</span> <span class="o">+=</span> <span class="nx">num</span>
+        <span class="nx">time</span><span class="o">+=</span> <span class="nx">num</span>
+      
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">ans</span>
+<span class="p">}</span>
+
+
+<span class="c1">//这里是直接拷贝官方的 懒得写了
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">pair</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">end</span><span class="p">,</span> <span class="nx">left</span> <span class="kt">int</span> <span class="p">}</span>
+<span class="kd">type</span> <span class="nx">hp</span> <span class="p">[]</span><span class="nx">pair</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="nx">hp</span><span class="p">)</span> <span class="nf">Len</span><span class="p">()</span> <span class="kt">int</span>            <span class="p">{</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="nx">hp</span><span class="p">)</span> <span class="nf">Less</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span>  <span class="p">{</span> <span class="k">return</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">end</span> <span class="p">&lt;</span> <span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">end</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="nx">hp</span><span class="p">)</span> <span class="nf">Swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span><span class="p">)</span>       <span class="p">{</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">=</span> <span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">hp</span><span class="p">)</span> <span class="nf">Push</span><span class="p">(</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span> <span class="o">*</span><span class="nx">h</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="o">*</span><span class="nx">h</span><span class="p">,</span> <span class="nx">v</span><span class="p">.(</span><span class="nx">pair</span><span class="p">))</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">hp</span><span class="p">)</span> <span class="nf">Pop</span><span class="p">()</span> <span class="kd">interface</span><span class="p">{}</span>   <span class="p">{</span> <span class="nx">a</span> <span class="o">:=</span> <span class="o">*</span><span class="nx">h</span><span class="p">;</span> <span class="nx">v</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="o">*</span><span class="nx">h</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="k">return</span> <span class="nx">v</span> <span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">min</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">a</span> <span class="p">&gt;</span> <span class="nx">b</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">b</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">a</span>
+<span class="p">}</span>
+</code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/rabin-karp/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png" loading="lazy" data-key="rabin-karp" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Rabin-Karp</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/datastruct/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg" loading="lazy" data-key="datastruct" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">优先队列</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/avl/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/avl.png" loading="lazy" data-key="avl" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/avl.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AVL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex2/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" loading="lazy" data-key="mutex2" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（2）</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex1/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" loading="lazy" data-key="mutex1" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（1）</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "f50129bf2ef1dc140097",
+        clientSecret: "546abc42291b4994898d2c5daca35cc15cccfd6f",
+        repo: "stickpraxis",
+        owner: "zzm996-zzm",
+        admin: [""],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#今天的每日一题还比较有趣">今天的每日一题还比较有趣~</a>
+      <ol>
+        <li><a href="#题目描述">题目描述</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+
+        
+        $.goup({
+        trigger: 300,
+        bottomOffset: 20,
+        locationOffset: 20,
+        title:  'Back to TOP',
+        titleAsText: false
+    });
+
+</script>
+
+    </body>
+</html>
