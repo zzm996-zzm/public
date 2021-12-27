@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='今天学一下字符串相乘~'><title>String Mul</title>
+
+<link rel='canonical' href='https://example.com/p/stringmul/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='String Mul'>
+<meta property='og:description' content='今天学一下字符串相乘~'>
+<meta property='og:url' content='https://example.com/p/stringmul/'>
+<meta property='og:site_name' content='张志明'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='算法' /><meta property='article:tag' content='golang' /><meta property='article:published_time' content='2021-12-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-12-27T00:00:00&#43;00:00'/><meta property='og:image' content='https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211228_121134.png' />
+<meta name="twitter:title" content="String Mul">
+<meta name="twitter:description" content="今天学一下字符串相乘~"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211228_121134.png' />
+    <link rel="shortcut icon" href="image/favicon.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "dark");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/stringmul/">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211228_121134.png" loading="lazy" alt="Featured image of post String Mul" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%AE%97%E6%B3%95/" >
+                算法
+            </a>
+        
+            <a href="/categories/golang/" >
+                golang
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/stringmul/">String Mul</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        今天学一下字符串相乘~
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 27, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="今天学习一下字符串相乘">今天学习一下字符串相乘</h2>
+<h3 id="题目描述">题目描述</h3>
+<p>这是Leetcode的题目 <a class="link" href="https://leetcode-cn.com/problems/multiply-strings/"  target="_blank" rel="noopener"
+    >43. 字符串相乘</a></p>
+<p>Tag : 「字符串」、「模拟」</p>
+<blockquote>
+<p>给定两个以字符串形式表示的非负整数 <code>num1</code> 和 <code>num2</code>，返回 <code>num1</code> 和 <code>num2</code> 的乘积，它们的乘积也表示为字符串形式。</p>
+<p><strong>示例 1：</strong></p>
+<pre tabindex="0"><code>输入: num1 = &quot;2&quot;, num2 = &quot;3&quot;
+输出: &quot;6&quot;
+</code></pre><p><strong>示例 2：</strong></p>
+<pre tabindex="0"><code>输入: num1 = &quot;123&quot;, num2 = &quot;456&quot;
+输出: &quot;56088&quot;
+</code></pre></blockquote>
+<h3 id="字符串相加">字符串相加</h3>
+<p>这道题和 <a class="link" href="https://leetcode-cn.com/problems/add-strings/"  target="_blank" rel="noopener"
+    >415. 字符串相加</a> 类似，首先需要我们看看字符串如何相加，题目要求不让转int去直接做，不然题目也没有什么意义了。所以先进行字符串的相加</p>
+<p>其实思路还是很简单的，对于字符 &lsquo;2&rsquo; 让他与 &lsquo;0&rsquo; 进行相减的操作得到int值就是2</p>
+<blockquote>
+<p>&lsquo;2&rsquo; -&gt; 50</p>
+<p>&lsquo;0&rsquo; -&gt; 48</p>
+</blockquote>
+<p>所以具体代码如下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">addStrings</span><span class="p">(</span><span class="nx">num1</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">num2</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+    <span class="nx">add</span> <span class="o">:=</span> <span class="mi">0</span>
+    <span class="nx">ans</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+    <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">num1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">num2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">add</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="p">=</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span>
+        <span class="k">if</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">x</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">num1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">y</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">num2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">result</span> <span class="o">:=</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">add</span>
+        <span class="nx">ans</span> <span class="p">=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">result</span><span class="o">%</span><span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="nx">ans</span>
+        <span class="nx">add</span> <span class="p">=</span> <span class="nx">result</span> <span class="o">/</span> <span class="mi">10</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">ans</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="字符串相乘">字符串相乘</h3>
+<p>对于字符串 &ldquo;123&rdquo; 和 &ldquo;456&rdquo;</p>
+<p><figure 
+	>
+	<a href="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/stringadd.png" >
+		<img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/stringadd.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20211228000244983">
+	</a>
+	
+	<figcaption>image-20211228000244983</figcaption>
+	
+</figure></p>
+<p><a class="link" href="https://leetcode-cn.com/problems/multiply-strings/solution/you-hua-ban-shu-shi-da-bai-994-by-breezean/"  target="_blank" rel="noopener"
+    >图片来源</a></p>
+<p>所以可以发现只需要 字符串2中的每个单一的值与字符串1相乘，对于后续的数字末尾补0即可，对于相加的部分只需要复用字符串相加代码即可！</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">multiply</span><span class="p">(</span><span class="nx">num1</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">num2</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">num1</span> <span class="o">==</span> <span class="s">&#34;0&#34;</span> <span class="o">||</span> <span class="nx">num2</span> <span class="o">==</span> <span class="s">&#34;0&#34;</span><span class="p">{</span>
+        <span class="k">return</span> <span class="s">&#34;0&#34;</span>
+    <span class="p">}</span>
+    <span class="nx">ret</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+    <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="nb">len</span><span class="p">(</span><span class="nx">num2</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="nx">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">--</span><span class="p">{</span>
+        <span class="nx">ans</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+        <span class="c1">//拼接0
+</span><span class="c1"></span>        <span class="k">for</span> <span class="nx">j</span><span class="o">:=</span><span class="nb">len</span><span class="p">(</span><span class="nx">num2</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="nx">j</span><span class="p">&gt;</span><span class="nx">i</span><span class="p">;</span><span class="nx">j</span><span class="o">--</span><span class="p">{</span>
+            <span class="nx">ans</span> <span class="o">+=</span> <span class="s">&#34;0&#34;</span>
+        <span class="p">}</span>
+
+        <span class="nx">n2</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">num2</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">)</span>
+        <span class="nx">inc</span> <span class="o">:=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="nx">k</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">num1</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> <span class="p">;</span><span class="nx">k</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">inc</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span><span class="nx">k</span><span class="o">--</span><span class="p">{</span>
+            <span class="nx">n1</span> <span class="o">:=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="nx">k</span> <span class="o">&gt;=</span>  <span class="mi">0</span><span class="p">{</span>
+                <span class="nx">n1</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">num1</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="nx">temp</span> <span class="o">:=</span> <span class="nx">n1</span>  <span class="o">*</span> <span class="nx">n2</span> <span class="o">+</span> <span class="nx">inc</span> 
+            <span class="nx">ans</span> <span class="p">=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">temp</span>  <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="nx">ans</span> 
+            <span class="nx">inc</span> <span class="p">=</span> <span class="nx">temp</span> <span class="o">/</span> <span class="mi">10</span> 
+        <span class="p">}</span>   
+
+       <span class="nx">ret</span> <span class="p">=</span> <span class="nf">addStrings</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span><span class="nx">ans</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">ret</span>
+<span class="p">}</span>
+
+
+<span class="kd">func</span> <span class="nf">addStrings</span><span class="p">(</span><span class="nx">num1</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">num2</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+    <span class="nx">add</span> <span class="o">:=</span> <span class="mi">0</span>
+    <span class="nx">ans</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+    <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">num1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">num2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">add</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="p">=</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span>
+        <span class="k">if</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">x</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">num1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">y</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">num2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">result</span> <span class="o">:=</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">add</span>
+        <span class="nx">ans</span> <span class="p">=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">result</span><span class="o">%</span><span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="nx">ans</span>
+        <span class="nx">add</span> <span class="p">=</span> <span class="nx">result</span> <span class="o">/</span> <span class="mi">10</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">ans</span>
+<span class="p">}</span>
+</code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+        
+            <a href="/tags/golang/">golang</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/priorityqueue_greedy/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/2021-12-14-apple.jpeg" loading="lazy" data-key="priorityQueue_greedy" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/2021-12-14-apple.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">PriorityQueue And  Greedy</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/rabin-karp/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png" loading="lazy" data-key="rabin-karp" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/clipboard_20211223_050137.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Rabin-Karp</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/datastruct/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg" loading="lazy" data-key="datastruct" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/wallhaven-rdql81.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">优先队列</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/avl/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/avl.png" loading="lazy" data-key="avl" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/datastruct/avl.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">AVL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/mutex2/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png" loading="lazy" data-key="mutex2" data-hash="https://zzm-1300642547.file.myqcloud.com/blog/images/golang/221956-16033763963867.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Mutex演进（2）</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "7fd36b789bb1a50f754e",
+        clientSecret: "261c27ccd48d2863a420b691568bbaa132f2db60",
+        repo: "stickpraxis",
+        owner: "zzm996-zzm",
+        admin: ["zzm996-zzm"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 张志明
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#今天学习一下字符串相乘">今天学习一下字符串相乘</a>
+      <ol>
+        <li><a href="#题目描述">题目描述</a></li>
+        <li><a href="#字符串相加">字符串相加</a></li>
+        <li><a href="#字符串相乘">字符串相乘</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+
+        
+        $.goup({
+        trigger: 300,
+        bottomOffset: 20,
+        locationOffset: 20,
+        title:  'Back to TOP',
+        titleAsText: false
+    });
+
+</script>
+
+    </body>
+</html>

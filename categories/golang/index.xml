@@ -6,7 +6,26 @@
     <description>Recent content in golang on 张志明</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 27 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>String Mul</title>
+      <link>https://example.com/p/stringmul/</link>
+      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/p/stringmul/</guid>
+      <description>今天学习一下字符串相乘 题目描述 这是Leetcode的题目 43. 字符串相乘
+Tag : 「字符串」、「模拟」
+ 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+示例 1：
+输入: num1 = &amp;quot;2&amp;quot;, num2 = &amp;quot;3&amp;quot; 输出: &amp;quot;6&amp;quot; 示例 2：
+输入: num1 = &amp;quot;123&amp;quot;, num2 = &amp;quot;456&amp;quot; 输出: &amp;quot;56088&amp;quot;  字符串相加 这道题和 415. 字符串相加 类似，首先需要我们看看字符串如何相加，题目要求不让转int去直接做，不然题目也没有什么意义了。所以先进行字符串的相加
+其实思路还是很简单的，对于字符 &amp;lsquo;2&amp;rsquo; 让他与 &amp;lsquo;0&amp;rsquo; 进行相减的操作得到int值就是2
+ &amp;lsquo;2&amp;rsquo; -&amp;gt; 50
+&amp;lsquo;0&amp;rsquo; -&amp;gt; 48
+ 所以具体代码如下
+func addStrings(num1 string, num2 string) string { add := 0 ans := &amp;#34;&amp;#34; for i, j := len(num1) - 1, len(num2) - 1; i &amp;gt;= 0 || j &amp;gt;= 0 || add !</description>
+    </item>
+    
     <item>
       <title>PriorityQueue And  Greedy</title>
       <link>https://example.com/p/priorityqueue_greedy/</link>
